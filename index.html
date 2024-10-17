@@ -47,12 +47,14 @@
 
         .project, .hackathon, .professional {
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
         }
 
         .project img, .hackathon img, .professional img {
-            width: 200px;
+            width: 150px;
             height: auto;
-            margin-top: 10px;
+            margin-left: 20px;
         }
 
         .project h3, .hackathon h3, .professional h3 {
@@ -79,7 +81,7 @@
         <div>
             <h1>Rafael Coutinho</h1>
             <p>Software Engineer student at INTELI | Blockchain | Open-source</p>
-			<p>Skill issue</p>
+            <p>Skill issue</p>
 
             <div class="links">
                 <a href="mailto:rafaelcouto111@gmail.com">Email</a> |
@@ -94,9 +96,11 @@
 
     <h2>Personal Projects</h2>
     <div class="project">
-        <h3>hikaridb : A distributed database who uses blockchain to achive globally unique state machine</h3>
-        <p>implement cerberus</p>
-        <a href="https://github.com/c0utin/hikaridb">Learn more</a>
+        <div>
+            <h3>hikaridb : A distributed database who uses blockchain to achieve globally unique state machine</h3>
+            <p>Implement Cerberus</p>
+            <a href="https://github.com/c0utin/hikaridb">Learn more</a>
+        </div>
         <img src="assets/project1.png" alt="hikaridb Image (optional)">
     </div>
 
@@ -105,10 +109,12 @@
 
     <h2>Hackathons</h2>
     <div class="hackathon">
-        <h3>cartesi 2024: Trustless-cards descentralized poker game</h3>
-        <p>Descentralized poker game powered by cartesi machine</p>
-        <a href="https://github.com/Trustless-Card/trustless-cards">Learn more</a>
-        <img src="assets/hackathon1.png" alt="Trustless-cards Image (optional)">
+        <div>
+            <h3>Cartesi: Trustless-cards decentralized poker game</h3>
+            <p>Descentralized poker game powered by Cartesi machine</p>
+            <a href="https://github.com/Trustless-Card/trustless-cards">Learn more</a>
+        </div>
+        <img src="assets/trustless.png" alt="Trustless-cards Image (optional)">
     </div>
 
     <!-- Divider -->
@@ -116,11 +122,14 @@
 
     <h2>Projects</h2>
     <div class="professional">
-        <h3>Project 1: Fintech company tool for real-time transaction analysis</h3>
-        <p>Developed an internal tool to help a fintech company analyze transaction data in real time.</p>
-        <a href="#">Learn more</a>
+        <div>
+            <h3>Law Hunter: Platform to Achieve Legal Research and NLP Model for Search</h3>
+            <p>Law Hunter is an platform designed to facilitate legal research by leveraging advanced Natural Language Processing (NLP) models. It enables users to quickly search and retrieve relevant legal documents, laws, and case precedents using a powerful search algorithm. The platform improves legal professionals' efficiency by providing precise and contextual results tailored to the legal field. Additionally, Law Hunter incorporates a tree-based tagging model similar to PageRank, enhancing the ranking of search results by evaluating the relevance and importance of legal documents in a structured way.</p>
+            <a href="#">Learn more</a>
+        </div>
         <img src="assets/professional1.png" alt="Professional Project 1 Image (optional)">
     </div>
+
 </body>
 </html>
 
