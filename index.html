@@ -1,135 +1,186 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rafael Coutinho</title>
-    <style>
-        body {
-            background-color: #222;
-            color: #eee;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Rafael Coutinho</title>
+        <style>
+            body {
+                background-color: #222;
+                color: #eee;
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+            }
 
-        .profile {
-            display: flex;
-            align-items: center;
-        }
+            .profile {
+                display: flex;
+                align-items: center;
+            }
 
-        .profile img {
-            width: 150px;
-            height: 150px;
-            margin-right: 20px;
-        }
+            .profile img {
+                width: 150px;
+                height: 150px;
+                margin-right: 20px;
+            }
 
-        .profile h1 {
-            margin: 0;
-        }
+            .profile h1 {
+                margin: 0;
+            }
 
-        a {
-            color: #88c0d0;
-            text-decoration: none;
-        }
+            a {
+                color: #88c0d0;
+                text-decoration: none;
+            }
 
-        a:hover {
-            text-decoration: underline;
-        }
+            a:hover {
+                text-decoration: underline;
+            }
 
-        .links {
-            margin-top: 10px;
-        }
+            .links {
+                margin-top: 10px;
+            }
 
-        .links a {
-            margin-right: 10px;
-        }
+            .links a {
+                margin-right: 10px;
+            }
 
-        .project, .hackathon, .professional {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-        }
+            .project,
+            .hackathon,
+            .professional {
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+            }
 
-        .project img, .hackathon img, .professional img {
-            width: 150px;
-            height: auto;
-            margin-left: 20px;
-        }
+            .project img,
+            .hackathon img,
+            .professional img {
+                width: 150px;
+                height: auto;
+                margin-left: 20px;
+            }
 
-        .project h3, .hackathon h3, .professional h3 {
-            margin-bottom: 5px;
-        }
+            .project h3,
+            .hackathon h3,
+            .professional h3 {
+                margin-bottom: 5px;
+            }
 
-        .project p, .hackathon p, .professional p {
-            margin-top: 0;
-        }
+            .project p,
+            .hackathon p,
+            .professional p {
+                margin-top: 0;
+            }
 
-        hr {
-            border: 0;
-            height: 1px;
-            background: #444;
-            margin: 40px 0;
-        }
+            hr {
+                border: 0;
+                height: 1px;
+                background: #444;
+                margin: 40px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="profile">
+            <img alt="Rafael Coutinho" src="assets/rafael.jpg" />
+            <div>
+                <h1>Rafael Coutinho</h1>
+                <p>
+                    Software Engineer student at INTELI | Blockchain |
+                    Open-source
+                </p>
+                <p>Skill issue</p>
 
-    </style>
-</head>
-<body>
-
-    <div class="profile">
-        <img alt="Rafael Coutinho" src="assets/rafael.jpg">
-        <div>
-            <h1>Rafael Coutinho</h1>
-            <p>Software Engineer student at INTELI | Blockchain | Open-source</p>
-            <p>Skill issue</p>
-
-            <div class="links">
-                <a href="mailto:rafaelcouto111@gmail.com">Email</a> |
-                <a href="https://github.com/c0utin">GitHub</a> |
-                <a href="https://www.linkedin.com/in/rafael-coutinho2004/">LinkedIn</a>
+                <div class="links">
+                    <a href="mailto:rafaelcouto111@gmail.com">Email</a> |
+                    <a href="https://github.com/c0utin">GitHub</a> |
+                    <a href="https://www.linkedin.com/in/rafael-coutinho2004/"
+                        >LinkedIn</a
+                    >
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Divider -->
-    <hr>
+        <!-- Divider -->
+        <hr />
 
-    <h2>Personal Projects</h2>
-    <div class="project">
-        <div>
-            <h3>hikaridb : A distributed database who uses blockchain to achieve globally unique state machine</h3>
-            <p>Implement Cerberus</p>
-            <a href="https://github.com/c0utin/hikaridb">Learn more</a>
+        <h2>Personal Projects</h2>
+        <div class="project">
+            <div>
+                <h3>
+                    hikaridb : A distributed database who uses blockchain to
+                    achieve globally unique state machine
+                </h3>
+                <p>Implement Cerberus</p>
+                <a href="https://github.com/c0utin/hikaridb">Learn more</a>
+            </div>
         </div>
-        <img src="assets/project1.png" alt="hikaridb Image (optional)">
-    </div>
 
-    <!-- Divider -->
-    <hr>
-
-    <h2>Hackathons</h2>
-    <div class="hackathon">
-        <div>
-            <h3>Cartesi: Trustless-cards decentralized poker game</h3>
-            <p>Descentralized poker game powered by Cartesi machine</p>
-            <a href="https://github.com/Trustless-Card/trustless-cards">Learn more</a>
+        <div class="project">
+            <div>
+                <h3>
+                    tcp-no-reason: implementation of TCP protocol wihtout any
+                    obvius reason
+                </h3>
+                <p>
+                    This project is a simplified implementation of the
+                    Transmission Control Protocol (TCP) based on RFC 793. It
+                    focuses on key TCP functionalities like connection
+                    establishment, flow control, and error handling, providing a
+                    hands-on approach to understanding the core principles of
+                    TCP networking.
+                </p>
+                <a href="https://github.com/c0utin/tcp-no-reason">Learn more</a>
+            </div>
         </div>
-        <img src="assets/trustless.png" alt="Trustless-cards Image (optional)">
-    </div>
 
-    <!-- Divider -->
-    <hr>
+        <!-- Divider -->
+        <hr />
 
-    <h2>Projects</h2>
-    <div class="professional">
-        <div>
-            <h3>Law Hunter: Platform to Achieve Legal Research and NLP Model for Search</h3>
-            <p>Law Hunter is an platform designed to facilitate legal research by leveraging advanced Natural Language Processing (NLP) models. It enables users to quickly search and retrieve relevant legal documents, laws, and case precedents using a powerful search algorithm. The platform improves legal professionals' efficiency by providing precise and contextual results tailored to the legal field. Additionally, Law Hunter incorporates a tree-based tagging model similar to PageRank, enhancing the ranking of search results by evaluating the relevance and importance of legal documents in a structured way.</p>
-            <a href="#">Learn more</a>
+        <h2>Hackathons</h2>
+        <div class="hackathon">
+            <div>
+                <h3>Cartesi: Trustless-cards decentralized poker game</h3>
+                <p>Descentralized poker game powered by Cartesi machine</p>
+                <a href="https://github.com/Trustless-Card/trustless-cards"
+                    >Learn more</a
+                >
+            </div>
+            <img
+                src="assets/trustless.png"
+                alt="Trustless-cards Image (optional)"
+            />
         </div>
-        <img src="assets/professional1.png" alt="Professional Project 1 Image (optional)">
-    </div>
 
-</body>
+        <!-- Divider -->
+        <hr />
+
+        <h2>Projects</h2>
+        <div class="professional">
+            <div>
+                <h3>
+                    Law Hunter: Platform to Achieve Legal Research and NLP Model
+                    for Search -> Bank Of America
+                </h3>
+                <p>
+                    Law Hunter is an platform designed to facilitate legal
+                    research by leveraging advanced Natural Language Processing
+                    (NLP) models. It enables users to quickly search and
+                    retrieve relevant legal documents, laws, and case precedents
+                    using a powerful search algorithm. The platform improves
+                    legal professionals' efficiency by providing precise and
+                    contextual results tailored to the legal field.
+                    Additionally, Law Hunter incorporates a tree-based tagging
+                    model similar to PageRank, enhancing the ranking of search
+                    results by evaluating the relevance and importance of legal
+                    documents in a structured way.
+                </p>
+                <a
+                    href="https://www.linkedin.com/feed/update/urn:li:activity:7250521610812604416/"
+                    >Learn more</a
+                >
+            </div>
+        </div>
+    </body>
 </html>
-
