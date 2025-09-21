@@ -56,8 +56,17 @@
         };
 
         devShells.default = pkgs.mkShell {
-          packages = buildInputs;
+          packages = buildInputs ++ (with pkgs; [
+            emscripten
+            python3
+            nodePackages.http-server
+          ]);
           LD_LIBRARY_PATH = libPath;
+          
+          shellHook = ''
+            echo "Development environment loaded!"
+            echo "For Mandala WASM build: cd mandala && make"
+          '';
         };
       });
 }

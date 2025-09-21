@@ -1,0 +1,89 @@
+# OS Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Build outputs
+*.o
+*.out
+*.exe
+*.wasm
+*.a
+*.so
+*.dylib
+*.dll
+
+# WebAssembly build artifacts
+*.wast
+*.wat
+
+# Emscripten generated files
+*.js.mem
+*.data
+*.asm.js
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.sublime-*
+*.code-workspace
+
+# Node.js dependencies (if using for local server)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Python cache (if using Python server)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.cache
+tmp/
+temp/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Local development
+.env
+.env.local
+config.local.js
+
+# Binary executables
+nob
+server
+main
+cc
+
+# Raylib specific
+libraylib.a
+raylib/
+
+# Build directories
+build/
+dist/
+out/
+
+# Shell output
+shell.html
+
+# Test files that shouldn't be committed
+test_*.html
+*_test.html
+*_dev.html
+
+# Keep the main portfolio files
+!portfolio_beautiful.html
+!README.md
