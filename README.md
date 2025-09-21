@@ -20,6 +20,8 @@ Nise da Silveira (1905-1999) was a Brazilian psychiatrist who:
 
 Learn more: [Nise da Silveira - Wikipedia](https://pt.wikipedia.org/wiki/Nise_da_Silveira)
 
+## Normies help guide
+
 ```bash
 # Build the nob tool (only needed once)
 cc nob.c -o nob
@@ -33,7 +35,3 @@ cc nob.c -o nob
 ./nob native       # Build native executable
 ./nob all          # Build everything
 ```
-
-
-- Inspired by the life and work of Nise da Silveira
-- Mathematical patterns based on classical geometric algorithms
