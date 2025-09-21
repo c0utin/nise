@@ -12,21 +12,40 @@ A beautiful, modern web portfolio showcasing algorithmically generated mathemati
 
 ## Quick Start
 
-### Option 1: Simple HTTP Server (Python)
+### Option 1: Using the C Web Server (Recommended)
 
-If you have Python installed:
+Build and run the included C server:
 
 ```bash
-# Python 3
-python3 -m http.server 8000
+# Build the server
+./nob serve
 
-# Python 2
-python -m SimpleHTTPServer 8000
+# Or build and run separately
+cc server.c -o server -O2 -Wall
+./server
 ```
 
-Then open your browser and navigate to: `http://localhost:8000/portfolio_beautiful.html`
+The server will run on `http://localhost:8080` and automatically serve `portfolio_beautiful.html`
 
-### Option 2: Node.js HTTP Server
+### Option 2: Using Nob Build System
+
+The project includes a complete build system:
+
+```bash
+# Build the nob tool (only needed once)
+cc nob.c -o nob
+
+# Start the web server
+./nob serve
+
+# Other available commands:
+./nob clean        # Remove all build artifacts
+./nob wasm         # Build WebAssembly modules
+./nob native       # Build native executable
+./nob all          # Build everything
+```
+
+### Option 3: Node.js HTTP Server
 
 If you have Node.js installed:
 
@@ -40,7 +59,7 @@ http-server -p 8000
 
 Then open your browser and navigate to: `http://localhost:8000/portfolio_beautiful.html`
 
-### Option 3: Direct File Opening
+### Option 4: Direct File Opening
 
 Simply open the `portfolio_beautiful.html` file directly in your web browser:
 

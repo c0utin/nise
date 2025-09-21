@@ -112,7 +112,7 @@ void handle_request(int client_fd) {
     // Sanitize path
     char filepath[MAX_PATH];
     if (strcmp(path, "/") == 0) {
-        strcpy(filepath, "combined_portfolio.html");
+        strcpy(filepath, "index.html");
     } else {
         // Remove leading slash
         snprintf(filepath, sizeof(filepath), ".%s", path);
@@ -171,10 +171,10 @@ int main() {
     }
     
     printf("=====================================\n");
-    printf("   Art Portfolio Server\n");
+    printf("   Nise - Portfolio Server\n");
     printf("=====================================\n");
     printf("[INFO] Server running on http://localhost:%d\n", PORT);
-    printf("[INFO] Serving combined_portfolio.html by default\n");
+    printf("[INFO] Serving index.html by default\n");
     printf("[INFO] Press Ctrl+C to stop\n");
     printf("=====================================\n\n");
     
