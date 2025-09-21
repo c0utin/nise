@@ -2,6 +2,8 @@
 #include "nob.h"
 #include <string.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int command_exists(const char *cmd) {
     char path[1024];
@@ -108,7 +110,7 @@ void build_native(void) {
     nob_log(NOB_INFO, "Building native version...");
     
     for (size_t i = 0; i < NOB_ARRAY_LEN(raylib_sources); i++) {
-        char obj_name[256];
+        static char obj_name[256];
         const char *basename = strrchr(raylib_sources[i], '/');
         if (basename) basename++; else basename = raylib_sources[i];
         snprintf(obj_name, sizeof(obj_name), "%s_native.o", basename);

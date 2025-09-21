@@ -177,14 +177,14 @@
             height: 100%;
         }
         
-        /* About Section */
-        .about-section {
+        /* Portfolio Section */
+        .portfolio-section {
             padding: 5rem 2rem;
             background: #ffffff;
         }
         
         .section-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
@@ -205,6 +205,72 @@
             color: #5f6368;
             max-width: 600px;
             margin: 0 auto;
+        }
+        
+        /* Carousel */
+        .carousel-container {
+            position: relative;
+            margin-top: 3rem;
+            padding: 0 60px;
+        }
+        
+        .carousel-track {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 1rem 0 2rem 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .carousel-track::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .carousel-card {
+            min-width: 380px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .carousel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .carousel-btn-left {
+            left: 10px;
+        }
+        
+        .carousel-btn-right {
+            right: 10px;
         }
         
         /* Nise Tribute Section */
@@ -238,13 +304,26 @@
             aspect-ratio: 3/4;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
             color: white;
-            font-size: 1.2rem;
-            text-align: center;
             padding: 2rem;
+            text-align: center;
         }
         
         .tribute-text h2 {
@@ -272,84 +351,6 @@
         
         .learn-more-link:hover {
             gap: 1rem;
-        }
-        
-        /* Algorithm Section */
-        .algorithm-section {
-            padding: 5rem 2rem;
-            background: white;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-            margin-top: 3rem;
-        }
-        
-        .feature-card {
-            text-align: center;
-            padding: 2rem;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            background: #f8f9fa;
-        }
-        
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-        }
-        
-        .feature-card h3 {
-            font-size: 1.5rem;
-            color: #202124;
-            margin-bottom: 1rem;
-        }
-        
-        .feature-card p {
-            color: #5f6368;
-            line-height: 1.6;
-        }
-        
-        /* Interactive Section */
-        .interactive-section {
-            padding: 5rem 2rem;
-            background: #f8f9fa;
-            text-align: center;
-        }
-        
-        .art-controls {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .interactive-canvas {
-            max-width: 800px;
-            margin: 3rem auto;
-            background: white;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            overflow: hidden;
-            aspect-ratio: 16 / 10;
-        }
-        
-        #interactiveCanvas {
-            width: 100%;
-            height: 100%;
         }
         
         /* Footer */
@@ -405,51 +406,155 @@
             }
         }
         
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
         /* Responsive */
         @media (max-width: 968px) {
             .hero-content {
                 grid-template-columns: 1fr;
                 text-align: center;
+                gap: 2rem;
+                padding: 1rem;
             }
             
             .hero-text h1 {
                 font-size: 2.5rem;
             }
             
+            .hero-canvas {
+                max-width: 350px;
+                margin: 0 auto;
+            }
+            
             .tribute-content {
                 grid-template-columns: 1fr;
+                gap: 2rem;
             }
             
             .nav-links {
                 display: none;
             }
+            
+            .carousel-container {
+                padding: 0 20px;
+            }
+            
+            .carousel-btn {
+                display: none !important;
+            }
+            
+            .carousel-card {
+                min-width: 300px;
+            }
         }
         
-        /* Loading animation */
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #1a73e8;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        @media (max-width: 640px) {
+            nav {
+                padding: 0.75rem 1rem;
+            }
+            
+            .hero {
+                height: auto;
+                min-height: 100vh;
+                padding: 2rem 0;
+            }
+            
+            .hero-text h1 {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .hero-description {
+                font-size: 0.95rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                text-align: center;
+                padding: 12px 24px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .section-subtitle {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+            
+            .carousel-container {
+                padding: 0;
+            }
+            
+            .carousel-track {
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .carousel-card {
+                min-width: 280px;
+            }
+            
+            .tribute-text h2 {
+                font-size: 2rem;
+            }
+            
+            .tribute-text p {
+                font-size: 0.95rem;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .portfolio-section, .tribute-section {
+                padding: 3rem 1rem;
+            }
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @media (max-width: 480px) {
+            .hero-text h1 {
+                font-size: 1.75rem;
+            }
+            
+            .hero-canvas {
+                max-width: 280px;
+            }
+            
+            .carousel-card {
+                min-width: 260px;
+            }
+            
+            .carousel-card h3 {
+                font-size: 1.1rem;
+            }
+            
+            .carousel-card p {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Touch-friendly carousel on mobile */
+        @media (pointer: coarse) {
+            .carousel-track {
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+            }
+            
+            .carousel-card {
+                scroll-snap-align: center;
+            }
         }
     </style>
 </head>
@@ -461,7 +566,6 @@
             <div class="nav-links">
                 <a href="#portfolio">Portfolio</a>
                 <a href="#tribute">Nise da Silveira</a>
-                <a href="#interactive">Create</a>
             </div>
         </div>
     </nav>
@@ -491,7 +595,7 @@
     </section>
     
     <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio-section" style="padding: 5rem 2rem; background: #ffffff;">
+    <section id="portfolio" class="portfolio-section">
         <div class="section-container">
             <div class="section-header">
                 <h2 class="section-title">Projects & Work</h2>
@@ -501,11 +605,11 @@
             </div>
             
             <!-- Carousel Container -->
-            <div class="carousel-container" style="position: relative; margin-top: 3rem;">
-                <div class="carousel-track" id="carouselTrack" style="display: flex; gap: 2rem; overflow-x: auto; scroll-behavior: smooth; padding: 1rem 0;">
+            <div class="carousel-container">
+                <div class="carousel-track" id="carouselTrack">
                     
                     <!-- L1NE Company (Startup) -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="carousel-card">
                         <div style="height: 200px; background: linear-gradient(135deg, #000 0%, #00ff00 100%); display: flex; align-items: center; justify-content: center; color: #00ff00; font-size: 1.8rem; font-weight: bold; position: relative;">
                             <span style="position: absolute; top: 10px; right: 10px; background: #00ff00; color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">STARTUP</span>
                             L1NE Company
@@ -513,25 +617,25 @@
                         <div style="padding: 1.5rem;">
                             <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Cloud-Native Without Containers</h3>
                             <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                Building cloud-native paradigm on NixOS only. No containers, no Kubernetes, no vendor lock-in.
+                                Building cloud-native paradigm on NixOS only. No containers, no Kubernetes, no vendor lock-in. Declarative. Scalable. Containerless.
                             </p>
                             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
                                 <span style="padding: 0.2rem 0.6rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.8rem;">NixOS</span>
-                                <span style="padding: 0.2rem 0.6rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.8rem;">Declarative</span>
+                                <span style="padding: 0.2rem 0.6rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.8rem;">Research</span>
                             </div>
-                            <a href="https://github.com/l1ne-company/.github" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
+                            <a href="https://github.com/l1ne-company/.github" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Startup →</a>
                         </div>
                     </div>
                     
-                    <!-- Blink -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- open-sh/blink -->
+                    <div class="carousel-card">
                         <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold;">
                             open-sh/blink
                         </div>
                         <div style="padding: 1.5rem;">
                             <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Simple API Terminal Platform</h3>
                             <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                Minimalist terminal development with no code dependencies.
+                                No code dependencies. Minimalist terminal development.
                             </p>
                             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
                                 <span style="padding: 0.2rem 0.6rem; background: #f3e8fd; color: #9334e6; border-radius: 12px; font-size: 0.8rem;">Odin</span>
@@ -541,15 +645,15 @@
                         </div>
                     </div>
                     
-                    <!-- Hexis School -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- hexis-school -->
+                    <div class="carousel-card">
                         <div style="height: 200px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold;">
                             hexis-school
                         </div>
                         <div style="padding: 1.5rem;">
                             <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Educational Platform</h3>
                             <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                Modern programming and blockchain concepts educational platform.
+                                Built with Rust. Modern programming and blockchain concepts.
                             </p>
                             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
                                 <span style="padding: 0.2rem 0.6rem; background: #fce8e6; color: #d33b27; border-radius: 12px; font-size: 0.8rem;">Rust</span>
@@ -559,53 +663,15 @@
                         </div>
                     </div>
                     
-                    <!-- Law Hunter -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                        <div style="height: 200px; background: linear-gradient(135deg, #1a73e8 0%, #174ea6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold; position: relative;">
-                            <span style="position: absolute; top: 10px; right: 10px; background: white; color: #1a73e8; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">PROFESSIONAL</span>
-                            Law Hunter
-                        </div>
-                        <div style="padding: 1.5rem;">
-                            <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Legal Research NLP</h3>
-                            <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                Advanced legal document analysis for Bank of America.
-                            </p>
-                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                                <span style="padding: 0.2rem 0.6rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.8rem;">NLP</span>
-                                <span style="padding: 0.2rem 0.6rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.8rem;">ML</span>
-                            </div>
-                            <a href="https://www.linkedin.com/feed/update/urn:li:activity:7250521610812604416/" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Asimov -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                        <div style="height: 200px; background: linear-gradient(135deg, #34a853 0%, #188038 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold; position: relative;">
-                            <span style="position: absolute; top: 10px; right: 10px; background: white; color: #34a853; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">PROFESSIONAL</span>
-                            Asimov
-                        </div>
-                        <div style="padding: 1.5rem;">
-                            <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">FIDC Fund Prediction</h3>
-                            <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                ML model predicting fund defaults for CVM (Brazilian Securities Commission).
-                            </p>
-                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                                <span style="padding: 0.2rem 0.6rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.8rem;">ML</span>
-                                <span style="padding: 0.2rem 0.6rem; background: #fef7e0; color: #ea8600; border-radius: 12px; font-size: 0.8rem;">Finance</span>
-                            </div>
-                            <a href="https://www.gov.br/cvm/pt-br/assuntos/noticias/2024/cvm-recebe-primeira-entrega-referente-a-parceria-com-o-inteli" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Guidorizzi -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- guidorizzi -->
+                    <div class="carousel-card">
                         <div style="height: 200px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold;">
                             guidorizzi
                         </div>
                         <div style="padding: 1.5rem;">
                             <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Mathematical Formalization</h3>
                             <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                Theorem proving using Lean for rigorous mathematical proof verification.
+                                Using Lean theorem prover for rigorous proof verification.
                             </p>
                             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
                                 <span style="padding: 0.2rem 0.6rem; background: #f3e8fd; color: #9334e6; border-radius: 12px; font-size: 0.8rem;">Lean</span>
@@ -615,8 +681,63 @@
                         </div>
                     </div>
                     
+                    <!-- toga -->
+                    <div class="carousel-card">
+                        <div style="height: 200px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold;">
+                            toga
+                        </div>
+                        <div style="padding: 1.5rem;">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Nix Configuration</h3>
+                            <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
+                                Personal Nix configuration files for reproducible development environments.
+                            </p>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                                <span style="padding: 0.2rem 0.6rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.8rem;">Nix</span>
+                                <span style="padding: 0.2rem 0.6rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.8rem;">DevOps</span>
+                            </div>
+                            <a href="https://github.com/c0utin/toga" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
+                        </div>
+                    </div>
+                    
+                    <!-- tcp-no-reason -->
+                    <div class="carousel-card">
+                        <div style="height: 200px; background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold;">
+                            tcp-no-reason
+                        </div>
+                        <div style="padding: 1.5rem;">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Custom TCP Protocol</h3>
+                            <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
+                                Implementation exploring low-level networking concepts.
+                            </p>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                                <span style="padding: 0.2rem 0.6rem; background: #fce8e6; color: #d33b27; border-radius: 12px; font-size: 0.8rem;">Networking</span>
+                                <span style="padding: 0.2rem 0.6rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.8rem;">Low-level</span>
+                            </div>
+                            <a href="https://github.com/c0utin/tcp-no-reason" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
+                        </div>
+                    </div>
+                    
+                    <!-- vex -->
+                    <div class="carousel-card">
+                        <div style="height: 200px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); display: flex; align-items: center; justify-content: center; color: #333; font-size: 1.8rem; font-weight: bold; position: relative;">
+                            <span style="position: absolute; top: 10px; right: 10px; background: #333; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">HACKATHON</span>
+                            vex
+                        </div>
+                        <div style="padding: 1.5rem;">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">ICP DApps Framework</h3>
+                            <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
+                                Support system for Internet Computer Protocol applications.
+                            </p>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                                <span style="padding: 0.2rem 0.6rem; background: #fef7e0; color: #ea8600; border-radius: 12px; font-size: 0.8rem;">JavaScript</span>
+                                <span style="padding: 0.2rem 0.6rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.8rem;">ICP</span>
+                            </div>
+                            <a href="https://github.com/c0utin/vex" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
+                        </div>
+                    </div>
+                    
                     <!-- Trustless Cards -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="carousel-card">
                         <div style="height: 200px; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold; position: relative;">
                             <span style="position: absolute; top: 10px; right: 10px; background: white; color: #ff9a9e; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">HACKATHON</span>
                             Trustless Cards
@@ -624,18 +745,18 @@
                         <div style="padding: 1.5rem;">
                             <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Decentralized Poker</h3>
                             <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                Trustless poker game on Cartesi with verifiable gameplay.
+                                Poker game on Cartesi with trustless gameplay verification.
                             </p>
                             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
                                 <span style="padding: 0.2rem 0.6rem; background: #fce8e6; color: #d33b27; border-radius: 12px; font-size: 0.8rem;">Cartesi</span>
-                                <span style="padding: 0.2rem 0.6rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.8rem;">Blockchain</span>
+                                <span style="padding: 0.2rem 0.6rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.8rem;">Poker</span>
                             </div>
                             <a href="https://github.com/Trustless-Card/trustless-cards" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
                         </div>
                     </div>
                     
                     <!-- Marselo Agent -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="carousel-card">
                         <div style="height: 200px; background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold; position: relative;">
                             <span style="position: absolute; top: 10px; right: 10px; background: white; color: #330867; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">HACKATHON</span>
                             Marselo Agent
@@ -653,63 +774,8 @@
                         </div>
                     </div>
                     
-                    <!-- VEX -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                        <div style="height: 200px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); display: flex; align-items: center; justify-content: center; color: #333; font-size: 1.8rem; font-weight: bold; position: relative;">
-                            <span style="position: absolute; top: 10px; right: 10px; background: #333; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">HACKATHON</span>
-                            VEX
-                        </div>
-                        <div style="padding: 1.5rem;">
-                            <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">ICP DApps Framework</h3>
-                            <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                Support system for Internet Computer Protocol applications.
-                            </p>
-                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                                <span style="padding: 0.2rem 0.6rem; background: #fef7e0; color: #ea8600; border-radius: 12px; font-size: 0.8rem;">JavaScript</span>
-                                <span style="padding: 0.2rem 0.6rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.8rem;">ICP</span>
-                            </div>
-                            <a href="https://github.com/c0utin/vex" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Toga -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                        <div style="height: 200px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold;">
-                            toga
-                        </div>
-                        <div style="padding: 1.5rem;">
-                            <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Nix Configuration</h3>
-                            <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                Personal Nix configuration files for reproducible development environments.
-                            </p>
-                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                                <span style="padding: 0.2rem 0.6rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.8rem;">Nix</span>
-                                <span style="padding: 0.2rem 0.6rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.8rem;">DevOps</span>
-                            </div>
-                            <a href="https://github.com/c0utin/toga" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
-                        </div>
-                    </div>
-                    
-                    <!-- TCP No Reason -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                        <div style="height: 200px; background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold;">
-                            tcp-no-reason
-                        </div>
-                        <div style="padding: 1.5rem;">
-                            <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Custom TCP Protocol</h3>
-                            <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                Low-level networking implementation exploring TCP protocol concepts.
-                            </p>
-                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                                <span style="padding: 0.2rem 0.6rem; background: #fce8e6; color: #d33b27; border-radius: 12px; font-size: 0.8rem;">Networking</span>
-                                <span style="padding: 0.2rem 0.6rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.8rem;">Low-level</span>
-                            </div>
-                            <a href="https://github.com/c0utin/tcp-no-reason" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
-                        </div>
-                    </div>
-                    
                     <!-- Data Mining Motoko -->
-                    <div class="carousel-card" style="min-width: 380px; background: #f8f9fa; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div class="carousel-card">
                         <div style="height: 200px; background: linear-gradient(135deg, #c471f5 0%, #fa71cd 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold; position: relative;">
                             <span style="position: absolute; top: 10px; right: 10px; background: white; color: #c471f5; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">HACKATHON</span>
                             Data Mining
@@ -717,7 +783,7 @@
                         <div style="padding: 1.5rem;">
                             <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">ICP Data Mining</h3>
                             <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
-                                Data mining implementation using Motoko for Internet Computer Protocol.
+                                Data mining implementation using Motoko for ICP.
                             </p>
                             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
                                 <span style="padding: 0.2rem 0.6rem; background: #f3e8fd; color: #9334e6; border-radius: 12px; font-size: 0.8rem;">Motoko</span>
@@ -726,161 +792,57 @@
                             <a href="https://github.com/c0utin/data_mining_motoko" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
                         </div>
                     </div>
+                    
+                    <!-- Law Hunter -->
+                    <div class="carousel-card">
+                        <div style="height: 200px; background: linear-gradient(135deg, #1a73e8 0%, #174ea6 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold; position: relative;">
+                            <span style="position: absolute; top: 10px; right: 10px; background: white; color: #1a73e8; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">PROFESSIONAL</span>
+                            Law Hunter
+                        </div>
+                        <div style="padding: 1.5rem;">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">Legal Research NLP</h3>
+                            <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
+                                NLP Model for Bank of America. Advanced legal document analysis.
+                            </p>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                                <span style="padding: 0.2rem 0.6rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.8rem;">NLP</span>
+                                <span style="padding: 0.2rem 0.6rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.8rem;">BoA</span>
+                            </div>
+                            <a href="https://www.linkedin.com/feed/update/urn:li:activity:7250521610812604416/" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Asimov -->
+                    <div class="carousel-card">
+                        <div style="height: 200px; background: linear-gradient(135deg, #34a853 0%, #188038 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; font-weight: bold; position: relative;">
+                            <span style="position: absolute; top: 10px; right: 10px; background: white; color: #34a853; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem;">PROFESSIONAL</span>
+                            Asimov
+                        </div>
+                        <div style="padding: 1.5rem;">
+                            <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem; color: #202124;">FIDC Fund Prediction</h3>
+                            <p style="color: #5f6368; line-height: 1.5; margin-bottom: 1rem; font-size: 0.95rem;">
+                                ML model predicting fund defaults for CVM (Brazilian Securities Commission).
+                            </p>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                                <span style="padding: 0.2rem 0.6rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.8rem;">ML</span>
+                                <span style="padding: 0.2rem 0.6rem; background: #fef7e0; color: #ea8600; border-radius: 12px; font-size: 0.8rem;">CVM</span>
+                            </div>
+                            <a href="https://www.gov.br/cvm/pt-br/assuntos/noticias/2024/cvm-recebe-primeira-entrega-referente-a-parceria-com-o-inteli" style="color: #1a73e8; text-decoration: none; font-size: 0.9rem;">View Project →</a>
+                        </div>
+                    </div>
+                    
                 </div>
                 
                 <!-- Carousel Controls -->
-                <button class="carousel-btn carousel-btn-left" id="carouselLeft" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;">
+                <button class="carousel-btn carousel-btn-left" id="carouselLeft">
                     <span style="font-size: 1.2rem;">←</span>
                 </button>
-                <button class="carousel-btn carousel-btn-right" id="carouselRight" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10;">
+                <button class="carousel-btn carousel-btn-right" id="carouselRight">
                     <span style="font-size: 1.2rem;">→</span>
                 </button>
             </div>
         </div>
     </section>
-    
-    <style>
-        .carousel-track {
-            scrollbar-width: thin;
-            scrollbar-color: #e0e0e0 #f8f9fa;
-        }
-        
-        .carousel-track::-webkit-scrollbar {
-            height: 8px;
-        }
-        
-        .carousel-track::-webkit-scrollbar-track {
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-        
-        .carousel-track::-webkit-scrollbar-thumb {
-            background: #e0e0e0;
-            border-radius: 10px;
-        }
-        
-        .carousel-track::-webkit-scrollbar-thumb:hover {
-            background: #d0d0d0;
-        }
-        
-        .carousel-btn:hover {
-            transform: translateY(-50%) scale(1.1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        
-        @media (max-width: 768px) {
-            .carousel-btn {
-                display: none !important;
-            }
-        }
-    </style>
-    
-    <!-- Nise da Silveira Tribute --> 
-                            sacred geometry, and complex mathematical patterns.
-                        </p>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <span style="padding: 0.25rem 0.75rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.9rem;">Mathematics</span>
-                            <span style="padding: 0.25rem 0.75rem; background: #fef7e0; color: #ea8600; border-radius: 12px; font-size: 0.9rem;">Algorithms</span>
-                            <span style="padding: 0.25rem 0.75rem; background: #f3e8fd; color: #9334e6; border-radius: 12px; font-size: 0.9rem;">Graphics</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project 3 -->
-                <div class="portfolio-item" style="background: #f8f9fa; border-radius: 12px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                    <div style="height: 250px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
-                        Project Preview
-                    </div>
-                    <div style="padding: 2rem;">
-                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: #202124;">Interactive Art Therapy</h3>
-                        <p style="color: #5f6368; line-height: 1.6; margin-bottom: 1.5rem;">
-                            Digital art therapy tools inspired by Nise da Silveira's methods, 
-                            allowing users to express creativity through mathematical patterns.
-                        </p>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <span style="padding: 0.25rem 0.75rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.9rem;">Art Therapy</span>
-                            <span style="padding: 0.25rem 0.75rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.9rem;">Interactive</span>
-                            <span style="padding: 0.25rem 0.75rem; background: #fce8e6; color: #d33b27; border-radius: 12px; font-size: 0.9rem;">Creative</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project 4 -->
-                <div class="portfolio-item" style="background: #f8f9fa; border-radius: 12px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                    <div style="height: 250px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); display: flex; align-items: center; justify-content: center; color: #333; font-size: 1.5rem;">
-                        Project Preview
-                    </div>
-                    <div style="padding: 2rem;">
-                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: #202124;">WebAssembly Art Engine</h3>
-                        <p style="color: #5f6368; line-height: 1.6; margin-bottom: 1.5rem;">
-                            High-performance art generation engine built with C and compiled to 
-                            WebAssembly for browser-based real-time rendering.
-                        </p>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <span style="padding: 0.25rem 0.75rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.9rem;">C</span>
-                            <span style="padding: 0.25rem 0.75rem; background: #fce8e6; color: #d33b27; border-radius: 12px; font-size: 0.9rem;">WebAssembly</span>
-                            <span style="padding: 0.25rem 0.75rem; background: #fef7e0; color: #ea8600; border-radius: 12px; font-size: 0.9rem;">Raylib</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project 5 -->
-                <div class="portfolio-item" style="background: #f8f9fa; border-radius: 12px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                    <div style="height: 250px; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
-                        Project Preview
-                    </div>
-                    <div style="padding: 2rem;">
-                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: #202124;">Mandala Generator</h3>
-                        <p style="color: #5f6368; line-height: 1.6; margin-bottom: 1.5rem;">
-                            Sacred geometry pattern generator creating unique mandalas through 
-                            mathematical algorithms and symmetry transformations.
-                        </p>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <span style="padding: 0.25rem 0.75rem; background: #f3e8fd; color: #9334e6; border-radius: 12px; font-size: 0.9rem;">Geometry</span>
-                            <span style="padding: 0.25rem 0.75rem; background: #e6f4ea; color: #137333; border-radius: 12px; font-size: 0.9rem;">Patterns</span>
-                            <span style="padding: 0.25rem 0.75rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.9rem;">Symmetry</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project 6 -->
-                <div class="portfolio-item" style="background: #f8f9fa; border-radius: 12px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                    <div style="height: 250px; background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
-                        Project Preview
-                    </div>
-                    <div style="padding: 2rem;">
-                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: #202124;">Fractal Explorer</h3>
-                        <p style="color: #5f6368; line-height: 1.6; margin-bottom: 1.5rem;">
-                            Interactive fractal exploration tool allowing deep zoom into mathematical 
-                            infinity with real-time rendering and color mapping.
-                        </p>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <span style="padding: 0.25rem 0.75rem; background: #e8f0fe; color: #1a73e8; border-radius: 12px; font-size: 0.9rem;">Fractals</span>
-                            <span style="padding: 0.25rem 0.75rem; background: #fef7e0; color: #ea8600; border-radius: 12px; font-size: 0.9rem;">Zoom</span>
-                            <span style="padding: 0.25rem 0.75rem; background: #f3e8fd; color: #9334e6; border-radius: 12px; font-size: 0.9rem;">Real-time</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <style>
-        .portfolio-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-        
-        .portfolio-grid {
-            animation: fadeInUp 1s ease;
-        }
-        
-        @media (max-width: 768px) {
-            .portfolio-grid {
-                grid-template-columns: 1fr !important;
-            }
-        }
-    </style>
     
     <!-- Nise da Silveira Tribute -->
     <section id="tribute" class="tribute-section">
@@ -888,10 +850,11 @@
             <div class="tribute-image">
                 <div class="image-card">
                     <div class="image-placeholder">
-                        <div>
+                        <img src="assets/nise.jpg" alt="Nise da Silveira">
+                        <div class="image-overlay">
                             <h3>Nise da Silveira</h3>
                             <p>(1905-1999)</p>
-                            <p style="font-size: 0.9rem; margin-top: 1rem;">
+                            <p style="font-size: 0.9rem; margin-top: 0.5rem;">
                                 Pioneer of Art Therapy<br>
                                 Founder of the Museum of<br>
                                 Images of the Unconscious
@@ -926,28 +889,6 @@
         </div>
     </section>
     
-    <!-- Interactive Section -->
-    <section id="interactive" class="interactive-section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Create Your Own Mathematical Art</h2>
-                <p class="section-subtitle">
-                    Click the button below to generate a new unique pattern. Each creation 
-                    is mathematically generated and will never be exactly repeated.
-                </p>
-            </div>
-            
-            <div class="interactive-canvas">
-                <canvas id="interactiveCanvas"></canvas>
-            </div>
-            
-            <div class="art-controls">
-                <button class="btn-primary" onclick="generateInteractiveArt()">Generate New Pattern</button>
-                <button class="btn-secondary" onclick="saveInteractiveArt()">Save as Image</button>
-            </div>
-        </div>
-    </section>
-    
     <!-- Footer -->
     <footer>
         <div class="footer-content">
@@ -959,11 +900,12 @@
             </p>
             <div class="footer-links">
                 <a href="https://pt.wikipedia.org/wiki/Nise_da_Silveira" target="_blank">About Nise da Silveira</a>
-                <a href="#about">About the Project</a>
-                <a href="#interactive">Create Art</a>
+                <a href="https://github.com/c0utin" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/rafael-coutinho2004/" target="_blank">LinkedIn</a>
+                <a href="https://www.x.com/coutin420" target="_blank">Twitter</a>
             </div>
             <p style="margin-top: 2rem; color: #9aa0a6;">
-                © 2024 Mathematical Art Project
+                © 2024 Rafael Coutinho - Nise Project
             </p>
         </div>
     </footer>
@@ -975,17 +917,14 @@
             ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe'],
             ['#fa709a', '#fee140', '#30cfd0', '#330867', '#c471ed'],
             ['#a8edea', '#fed6e3', '#f5f7fa', '#ffd89b', '#19547b'],
-            ['#ff9a9e', '#fecfef', '#fecfef', '#a1c4fd', '#c2e9fb'],
-            ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#fca400']
+            ['#ff9a9e', '#fecfef', '#fecfef', '#a1c4fd', '#c2e9fb']
         ];
         
-        // Initialize canvases
+        // Initialize canvas
         const heroCanvas = document.getElementById('artCanvas');
         const heroCtx = heroCanvas.getContext('2d');
-        const interactiveCanvas = document.getElementById('interactiveCanvas');
-        const interactiveCtx = interactiveCanvas.getContext('2d');
         
-        // Set canvas sizes
+        // Set canvas size
         function setupCanvas(canvas) {
             const container = canvas.parentElement;
             canvas.width = container.offsetWidth * 2;
@@ -997,7 +936,6 @@
         }
         
         setupCanvas(heroCanvas);
-        setupCanvas(interactiveCanvas);
         
         // Draw mandala
         function drawMandala(ctx, x, y, size, colors) {
@@ -1024,7 +962,6 @@
                     }
                     ctx.stroke();
                     
-                    // Decorative elements
                     if (layer > 1 && Math.random() > 0.6) {
                         const dotX = x + Math.cos(angle + (nextAngle - angle) / 2) * radius * 0.75;
                         const dotY = y + Math.sin(angle + (nextAngle - angle) / 2) * radius * 0.75;
@@ -1036,67 +973,17 @@
                 }
             }
             
-            // Center circle
             ctx.beginPath();
             ctx.arc(x, y, size * 0.05, 0, Math.PI * 2);
             ctx.fillStyle = colors[0];
             ctx.fill();
         }
         
-        // Draw fractal tree
-        function drawFractalTree(ctx, x, y, size, angle, depth, colors) {
-            if (depth === 0) return;
-            
-            const x2 = x + Math.cos(angle) * size;
-            const y2 = y + Math.sin(angle) * size;
-            
-            ctx.strokeStyle = colors[depth % colors.length] + 'CC';
-            ctx.lineWidth = Math.max(0.5, depth / 3);
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x2, y2);
-            ctx.stroke();
-            
-            const angleVar = Math.PI / 5 + Math.random() * Math.PI / 10;
-            const sizeRatio = 0.65 + Math.random() * 0.1;
-            
-            drawFractalTree(ctx, x2, y2, size * sizeRatio, angle - angleVar, depth - 1, colors);
-            drawFractalTree(ctx, x2, y2, size * sizeRatio, angle + angleVar, depth - 1, colors);
-            
-            if (Math.random() > 0.8 && depth > 2) {
-                drawFractalTree(ctx, x2, y2, size * sizeRatio * 0.8, angle, depth - 2, colors);
-            }
-        }
-        
-        // Draw spiral
-        function drawSpiral(ctx, x, y, size, colors) {
-            const points = 300;
-            const turns = Math.random() * 4 + 3;
-            
-            ctx.lineWidth = 2;
-            
-            for (let i = 0; i < points; i++) {
-                const angle = (i / points) * Math.PI * 2 * turns;
-                const radius = (i / points) * size;
-                const px = x + Math.cos(angle) * radius;
-                const py = y + Math.sin(angle) * radius;
-                
-                if (i > 0) {
-                    ctx.strokeStyle = colors[Math.floor(i / 50) % colors.length] + 'AA';
-                    ctx.beginPath();
-                    ctx.arc(px, py, 2 + (i / points) * 3, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.stroke();
-                }
-            }
-        }
-        
-        // Generate art for any canvas
+        // Generate art for canvas
         function generateArt(ctx, canvas) {
             const width = canvas.width / 2;
             const height = canvas.height / 2;
             
-            // Clear with white
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, width, height);
             
@@ -1120,19 +1007,9 @@
                 ));
                 
                 positions.push({ x, y, size });
-                
-                const artType = Math.random();
-                
-                if (artType < 0.4) {
-                    drawMandala(ctx, x, y, size, palette);
-                } else if (artType < 0.7) {
-                    drawFractalTree(ctx, x, y - size/2, size/2, -Math.PI/2, 7, palette);
-                } else {
-                    drawSpiral(ctx, x, y, size * 0.8, palette);
-                }
+                drawMandala(ctx, x, y, size, palette);
             }
             
-            // Add subtle dots
             for (let i = 0; i < 15; i++) {
                 ctx.fillStyle = palette[Math.floor(Math.random() * palette.length)] + '33';
                 ctx.beginPath();
@@ -1147,19 +1024,6 @@
             }
         }
         
-        // Generate interactive art
-        function generateInteractiveArt() {
-            generateArt(interactiveCtx, interactiveCanvas);
-        }
-        
-        // Save interactive art
-        function saveInteractiveArt() {
-            const link = document.createElement('a');
-            link.download = `mathematical-art-${Date.now()}.png`;
-            link.href = interactiveCanvas.toDataURL();
-            link.click();
-        }
-        
         // Auto-generate hero art
         function animateHeroArt() {
             generateArt(heroCtx, heroCanvas);
@@ -1167,10 +1031,22 @@
         
         // Initial generation
         animateHeroArt();
-        generateInteractiveArt();
         
         // Auto-refresh hero art
         setInterval(animateHeroArt, 8000);
+        
+        // Carousel functionality
+        const track = document.getElementById('carouselTrack');
+        const leftBtn = document.getElementById('carouselLeft');
+        const rightBtn = document.getElementById('carouselRight');
+        
+        leftBtn.addEventListener('click', () => {
+            track.scrollLeft -= 400;
+        });
+        
+        rightBtn.addEventListener('click', () => {
+            track.scrollLeft += 400;
+        });
         
         // Smooth scroll for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1181,15 +1057,6 @@
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
-        });
-        
-        // Parallax effect on scroll
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.hero');
-            if (parallax) {
-                parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
-            }
         });
     </script>
 </body>
