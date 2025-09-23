@@ -1,4 +1,6 @@
 #include "art_core.h"
+#include <stdlib.h>
+#include <time.h>
 
 typedef struct {
     float centerX;
@@ -56,13 +58,37 @@ static void DrawMandalaPattern(float centerX, float centerY, float radius, int s
 static void Mandala_Init(void) {
     mandala.centerX = SCREEN_WIDTH / 2.0f;
     mandala.centerY = SCREEN_HEIGHT / 2.0f;
-    mandala.segments = 12;
+    mandala.segments = 8 + (rand() % 9);  // Random segments between 8-16
     mandala.rotation = 0.0f;
     mandala.scale = 1.0f;
-    mandala.primaryColor = (Color){ 139, 69, 19, 255 };
-    mandala.secondaryColor = (Color){ 255, 215, 0, 255 };
+    
+    // Generate random vibrant colors
+    int colorChoice = rand() % 5;
+    switch(colorChoice) {
+        case 0: // Earth tones
+            mandala.primaryColor = (Color){ 139 + rand()%50, 69 + rand()%30, 19 + rand()%30, 255 };
+            mandala.secondaryColor = (Color){ 255 - rand()%50, 215 - rand()%30, rand()%100, 255 };
+            break;
+        case 1: // Ocean blues
+            mandala.primaryColor = (Color){ rand()%100, 100 + rand()%100, 150 + rand()%105, 255 };
+            mandala.secondaryColor = (Color){ rand()%50, 150 + rand()%105, 200 + rand()%55, 255 };
+            break;
+        case 2: // Fire colors
+            mandala.primaryColor = (Color){ 200 + rand()%55, 50 + rand()%100, rand()%50, 255 };
+            mandala.secondaryColor = (Color){ 255 - rand()%30, 150 + rand()%105, rand()%30, 255 };
+            break;
+        case 3: // Purple/Pink
+            mandala.primaryColor = (Color){ 150 + rand()%105, rand()%100, 150 + rand()%105, 255 };
+            mandala.secondaryColor = (Color){ 200 + rand()%55, 100 + rand()%100, 200 + rand()%55, 255 };
+            break;
+        case 4: // Green nature
+            mandala.primaryColor = (Color){ rand()%100, 150 + rand()%105, rand()%100, 255 };
+            mandala.secondaryColor = (Color){ 100 + rand()%100, 200 + rand()%55, 50 + rand()%50, 255 };
+            break;
+    }
+    
     mandala.animationTime = 0.0f;
-    mandala.speed = 0.3f;
+    mandala.speed = 0.2f + (rand() % 30) * 0.01f;  // Random speed between 0.2-0.5
     
     InitParticleSystem(particles, MAX_PARTICLES);
 }

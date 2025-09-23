@@ -1,4 +1,6 @@
 #include "art_core.h"
+#include <stdlib.h>
+#include <time.h>
 
 typedef struct {
     float zoom;
@@ -82,11 +84,13 @@ static void Fractal_Init(void) {
     fractal.zoom = 1.0f;
     fractal.offsetX = -0.5f;
     fractal.offsetY = 0.0f;
-    fractal.iterations = 128;
+    fractal.iterations = 100 + (rand() % 156);  // Random iterations 100-255
     fractal.animationTime = 0.0f;
-    fractal.speed = 0.15f;
+    fractal.speed = 0.1f + (rand() % 30) * 0.01f;  // Random speed 0.1-0.4
     
-    GeneratePalette(fractal.palette, 0);
+    // Start with a random hue offset for variety
+    float randomHue = (float)(rand() % 360);
+    GeneratePalette(fractal.palette, randomHue);
 }
 
 static void Fractal_Update(float deltaTime) {

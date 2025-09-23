@@ -28,12 +28,12 @@ void InitFractal() {
     fractal.centerX = -0.5f;
     fractal.centerY = 0.0f;
     fractal.zoom = 1.5f;
-    fractal.colorScheme = GetRandomValue(0, 4);
-    fractal.fractalType = GetRandomValue(0, 3);
+    fractal.colorScheme = rand() % 5;  // Truly random color scheme
+    fractal.fractalType = rand() % 4;  // Truly random fractal type
     
-    // Randomize Julia parameters
-    juliaReal = -0.8f + GetRandomValue(0, 100) * 0.003f;
-    juliaImag = 0.156f + GetRandomValue(0, 100) * 0.003f;
+    // Randomize Julia parameters with true randomness
+    juliaReal = -0.8f + (rand() % 100) * 0.003f;
+    juliaImag = 0.156f + (rand() % 100) * 0.003f;
 }
 
 Color GetFractalColor(int iterations, int maxIterations) {
@@ -238,6 +238,7 @@ void MainLoopFractal() {
 }
 
 int main() {
+    srand(time(NULL));  // Initialize C random seed for true randomness
     SetRandomSeed(time(NULL));
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Fractal Gallery");
     SetTargetFPS(30);

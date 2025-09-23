@@ -11,6 +11,59 @@ int command_exists(const char *cmd) {
     return system(path) == 0;
 }
 
+void build_raylib_native(void) {
+    Nob_Cmd cmd = {0};
+    
+    if (nob_file_exists("libraylib.a")) {
+        nob_log(NOB_INFO, "libraylib.a already exists, skipping build");
+        return;
+    }
+    
+    nob_log(NOB_INFO, "Building raylib for native platform...");
+    
+    const char *sources[] = {
+        "raylib/src/rcore.c", "raylib/src/rshapes.c", "raylib/src/rtextures.c",
+        "raylib/src/rtext.c", "raylib/src/rmodels.c", "raylib/src/utils.c",
+        "raylib/src/raudio.c"
+    };
+    
+    const char *objects[] = {
+        "rcore.o", "rshapes.o", "rtextures.o",
+        "rtext.o", "rmodels.o", "utils.o",
+        "raudio.o"
+    };
+    
+    // Compile each source file
+    for (size_t i = 0; i < NOB_ARRAY_LEN(sources); i++) {
+        if (nob_needs_rebuild1(objects[i], sources[i])) {
+            cmd.count = 0;
+            nob_cmd_append(&cmd, "gcc", "-c", sources[i], "-o", objects[i], NULL);
+            nob_cmd_append(&cmd, "-I", "raylib/src", "-I", "raylib/src/external/glfw/include", NULL);
+            nob_cmd_append(&cmd, "-DPLATFORM_DESKTOP", "-D_DEFAULT_SOURCE", NULL);
+            nob_cmd_append(&cmd, "-O2", "-std=c99", NULL);
+            
+            if (!nob_cmd_run_sync(cmd)) {
+                nob_log(NOB_ERROR, "Failed to compile %s", sources[i]);
+                exit(1);
+            }
+        }
+    }
+    
+    // Create static library
+    cmd.count = 0;
+    nob_cmd_append(&cmd, "ar", "rcs", "libraylib.a", NULL);
+    for (size_t i = 0; i < NOB_ARRAY_LEN(objects); i++) {
+        nob_cmd_append(&cmd, objects[i], NULL);
+    }
+    
+    if (!nob_cmd_run_sync(cmd)) {
+        nob_log(NOB_ERROR, "Failed to create libraylib.a");
+        exit(1);
+    }
+    
+    nob_log(NOB_INFO, "raylib native library built successfully!");
+}
+
 void build_raylib_wasm(void) {
     Nob_Cmd cmd = {0};
     
@@ -53,9 +106,9 @@ void build_raylib_wasm(void) {
         }
     }
     
-    if (nob_needs_rebuild("libraylib.a", NULL, 0)) {
+    if (nob_needs_rebuild("libraylib_wasm.a", NULL, 0)) {
         cmd.count = 0;
-        nob_cmd_append(&cmd, "emar", "rcs", "libraylib.a", NULL);
+        nob_cmd_append(&cmd, "emar", "rcs", "libraylib_wasm.a", NULL);
         nob_cmd_append(&cmd, "rcore.c.o", "rshapes.c.o", "rtextures.c.o", NULL);
         nob_cmd_append(&cmd, "rtext.c.o", "rmodels.c.o", "utils.c.o", "raudio.c.o", NULL);
         
@@ -69,14 +122,14 @@ void build_raylib_wasm(void) {
 void build_art_wasm(void) {
     Nob_Cmd cmd = {0};
     
-    if (!nob_file_exists("libraylib.a")) {
+    if (!nob_file_exists("libraylib_wasm.a")) {
         build_raylib_wasm();
     }
     
     nob_log(NOB_INFO, "Building Art Generator for WebAssembly...");
     
     cmd.count = 0;
-    nob_cmd_append(&cmd, "emcc", "art_wasm.c", "libraylib.a", NULL);
+    nob_cmd_append(&cmd, "emcc", "art_wasm.c", "libraylib_wasm.a", NULL);
     nob_cmd_append(&cmd, "-o", "art.html", NULL);
     nob_cmd_append(&cmd, "-Os", "-Wall", NULL);
     nob_cmd_append(&cmd, "-I", "raylib/src", NULL);
@@ -110,7 +163,7 @@ void build_native(void) {
     nob_log(NOB_INFO, "Building native version...");
     
     for (size_t i = 0; i < NOB_ARRAY_LEN(raylib_sources); i++) {
-        static char obj_name[256];
+        static char obj_name[256];  // Use static to keep the memory valid
         const char *basename = strrchr(raylib_sources[i], '/');
         if (basename) basename++; else basename = raylib_sources[i];
         snprintf(obj_name, sizeof(obj_name), "%s_native.o", basename);
@@ -189,6 +242,9 @@ void run_native(void) {
 void build_modular_native(void) {
     Nob_Cmd cmd = {0};
     
+    // Build raylib first if needed
+    build_raylib_native();
+    
     nob_log(NOB_INFO, "Building modular art generator (native)...");
     
     const char *sources[] = {
@@ -207,8 +263,7 @@ void build_modular_native(void) {
         
         if (nob_needs_rebuild1(objects[i], sources[i])) {
             cmd.count = 0;
-            nob_cmd_append(&cmd, "gcc", "-Wall", "-Wextra", "-O2", "-std=c11", NULL);
-            nob_cmd_append(&cmd, "-c", sources[i], "-o", objects[i], NULL);
+            nob_cmd_append(&cmd, "gcc", "-Wall", "-Wextra", "-O2", "-std=c11", "-I./raylib/src", "-c", sources[i], "-o", objects[i], NULL);
             
             if (!nob_cmd_run_sync(cmd)) {
                 nob_log(NOB_ERROR, "Failed to compile %s", sources[i]);
@@ -222,11 +277,11 @@ void build_modular_native(void) {
     for (size_t i = 0; i < NOB_ARRAY_LEN(objects); i++) {
         nob_cmd_append(&cmd, objects[i], NULL);
     }
-    nob_cmd_append(&cmd, "-o", "art_generator", NULL);
-    nob_cmd_append(&cmd, "-lraylib", "-lm", "-lpthread", "-ldl", "-lrt", "-lX11", NULL);
+    nob_cmd_append(&cmd, "-o", "art_generator", "./libraylib.a", "-lm", "-lpthread", "-ldl", NULL);
     
+    // Try to add platform-specific libs if available  
     #ifdef __linux__
-        nob_cmd_append(&cmd, "-lGL", NULL);
+        nob_cmd_append(&cmd, "-lglfw", "-lGL", "-lX11", NULL);
     #elif defined(__APPLE__)
         nob_cmd_append(&cmd, "-framework", "CoreVideo", NULL);
         nob_cmd_append(&cmd, "-framework", "IOKit", NULL);
@@ -251,14 +306,14 @@ void build_fractal_wasm(void) {
         exit(1);
     }
     
-    if (!nob_file_exists("libraylib.a")) {
+    if (!nob_file_exists("libraylib_wasm.a")) {
         build_raylib_wasm();
     }
     
     nob_log(NOB_INFO, "Building Fractal module for WASM...");
     
     cmd.count = 0;
-    nob_cmd_append(&cmd, "emcc", "module_fractal.c", "libraylib.a", NULL);
+    nob_cmd_append(&cmd, "emcc", "module_fractal.c", "libraylib_wasm.a", NULL);
     nob_cmd_append(&cmd, "-o", "fractals.html", NULL);
     nob_cmd_append(&cmd, "-Os", "-Wall", NULL);
     nob_cmd_append(&cmd, "-I", "raylib/src", NULL);
@@ -287,14 +342,14 @@ void build_mandala_wasm(void) {
         exit(1);
     }
     
-    if (!nob_file_exists("libraylib.a")) {
+    if (!nob_file_exists("libraylib_wasm.a")) {
         build_raylib_wasm();
     }
     
     nob_log(NOB_INFO, "Building Mandala module for WASM...");
     
     cmd.count = 0;
-    nob_cmd_append(&cmd, "emcc", "module_mandala.c", "libraylib.a", NULL);
+    nob_cmd_append(&cmd, "emcc", "module_mandala.c", "libraylib_wasm.a", NULL);
     nob_cmd_append(&cmd, "-o", "mandala.html", NULL);
     nob_cmd_append(&cmd, "-Os", "-Wall", NULL);
     nob_cmd_append(&cmd, "-I", "raylib/src", NULL);

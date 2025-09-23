@@ -1,9 +1,0 @@
-add mandalla unique generator from user-info
-
-add data-science about languages/activity
-
-add bitcoin walllet
-
-add professional-experience
-
-add easter-egg arts 
