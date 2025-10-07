@@ -1,8 +1,8 @@
 {
-  description = "Pulse – an Odin + raylib game, packaged with Nix flake";
+  description = "Nise – Modular generative art with React + Three.js";
 
   inputs = {
-    nixpkgs.url    = "nixpkgs/nixos-unstable";
+    nixpkgs.url = "nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -10,62 +10,30 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-
-        runtimeLibs = with pkgs; [
-          raylib
-          glfw
-          libGL            
-          xorg.libX11
-          xorg.libXrandr
-          xorg.libXcursor
-          xorg.libXi
-          freetype
-          fontconfig
-          expat
-          libxkbcommon
-          wayland
-        ];
-
-        buildInputs = runtimeLibs ++ (with pkgs; [
-          odin
-          clang
-          pkg-config
-        ]);
-
-        libPath = pkgs.lib.makeLibraryPath runtimeLibs;
       in {
-
-        packages.default = pkgs.stdenv.mkDerivation {
-          pname = "pulse";
-          version = "0.1.0";
-
-          src = ./.;
-          nativeBuildInputs = buildInputs;
-          buildInputs        = buildInputs;
-
-          buildPhase = ''
-            odin build src -debug -out:pulse
-          '';
-
-          installPhase = ''
-            mkdir -p $out/bin
-            cp pulse $out/bin/
-            wrapProgram $out/bin/pulse \
-              --prefix LD_LIBRARY_PATH : ${libPath}
-          '';
-        };
-
         devShells.default = pkgs.mkShell {
-          packages = buildInputs ++ (with pkgs; [
-            emscripten
-            python3
-            nodePackages.http-server
-          ]);
-          LD_LIBRARY_PATH = libPath;
-          
+          packages = with pkgs; [
+            nodejs_20
+            nodePackages.npm
+            nodePackages.typescript
+            nodePackages.typescript-language-server
+            nodePackages.vscode-langservers-extracted
+          ];
+
           shellHook = ''
-            echo "Development environment loaded!"
-            echo "For Mandala WASM build: cd mandala && make"
+            echo "🎨 Nise Development Environment"
+            echo "================================"
+            echo "Node.js: $(node --version)"
+            echo "npm: $(npm --version)"
+            echo ""
+            echo "Commands:"
+            echo "  npm install  - Install dependencies"
+            echo "  npm run dev  - Start dev server (http://localhost:3000)"
+            echo "  npm run build - Build for production"
+            echo "  npm run deploy - Deploy to GitHub Pages"
+            echo ""
+            echo "Tribute to Nise da Silveira (1905-1999)"
+            echo "================================"
           '';
         };
       });

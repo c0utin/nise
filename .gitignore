@@ -75,6 +75,12 @@ raylib/
 build/
 dist/
 out/
+.vite/
+.turbo/
+
+# React/Vite specific
+dist-ssr/
+*.local
 
 # Shell output
 shell.html
