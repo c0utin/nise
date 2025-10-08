@@ -1,55 +1,96 @@
 import { useRef, useEffect, useState } from 'react'
 import { createSymbioticArt } from './ArtTexture'
 
-// Map layout - 0 = empty, 1 = wall, 5-7 = portals
+// Museum layout - 0 = empty, 1 = wall, 2 = info plaque, 3 = artwork, 4 = special feature
 const worldMap = [
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,5,0,0,0,6,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,7,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1],
+  [1,0,0,0,0,1,3,1,0,0,0,1,3,1,0,0,0,0,0,1],
+  [1,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,1],
+  [1,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1],
+  [1,0,0,0,0,1,3,1,0,0,0,1,3,1,0,0,0,0,0,1],
+  [1,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ]
 
-// Portal locations
-const portals = {
-  5: { x: 5, y: 3, room: 'projects', color: '#4ecdc4' },
-  6: { x: 9, y: 3, room: 'posts', color: '#ff6b6b' },
-  7: { x: 5, y: 9, room: 'nise', color: '#1a73e8' }
+// Museum information plaques
+const museumInfo = {
+  entrance: {
+    title: "MUSEU DE IMAGENS DO INCONSCIENTE",
+    content: "Founded by Nise da Silveira in Rio de Janeiro. A center for study and research preserving thousands of artworks created by people with profound psychic experiences."
+  },
+  nise: {
+    title: "NISE DA SILVEIRA (1905-1999)",
+    content: "Revolutionary Brazilian psychiatrist who transformed mental health treatment through art therapy. She rejected aggressive treatments, championing creative expression as a pathway to healing."
+  },
+  workshops: {
+    title: "ATELIÊS TERAPÊUTICOS",
+    content: "Therapeutic workshops where patients express themselves through painting and sculpture. Most artists had no prior training, creating with complete creative freedom guided by their 'inner music'."
+  },
+  collection: {
+    title: "THE COLLECTION",
+    content: "Thousands of artworks revealing the depths of human psychology. These images serve as windows into the unconscious, expressing what words cannot capture."
+  },
+  research: {
+    title: "CENTRO DE ESTUDOS",
+    content: "Years of research material studying artistic expressions from deep psychological states. The museum continues Nise's legacy of understanding the inner world through images."
+  },
+  location: {
+    title: "VISIT THE MUSEUM",
+    content: "Rua Ramiro Magalhães, 521, Engenho de Dentro, Rio de Janeiro. Open Tuesday-Saturday, 10h-16h. Free entry."
+  }
 }
 
-// Static art placement on specific walls
-const artPlacements = [
-  { x: 7, y: 0, side: 1, artId: 1 }, // Top wall, art 1
-  { x: 15, y: 7, side: 0, artId: 2 }, // Right wall, art 2
-  { x: 7, y: 15, side: 1, artId: 3 }  // Bottom wall, art 3
+// Artwork descriptions - inspired by the unconscious
+const artworks = [
+  { title: "Mandala", artist: "Anonymous", description: "Circular patterns emerging from the unconscious" },
+  { title: "Inner Landscape", artist: "Workshop Patient", description: "A world seen through different eyes" },
+  { title: "The Garden", artist: "Therapeutic Atelier", description: "Nature as metaphor for the psyche" },
+  { title: "Cosmic Vision", artist: "Anonymous", description: "The universe within and without" }
 ]
+
+// Map specific locations to specific content
+const contentMap = {
+  // Info plaques (type 2) by position
+  '3,2': 'entrance',
+  '15,2': 'nise',
+  '3,10': 'workshops',
+  '15,10': 'collection',
+  '3,16': 'research',
+  '15,16': 'location',
+  // Artworks (type 3) by position
+  '6,5': 0,
+  '13,5': 1,
+  '6,12': 2,
+  '13,12': 3
+}
 
 export default function Raycaster({ onRoomEnter, onPortalTouch }) {
   const canvasRef = useRef(null)
   const [currentRoom, setCurrentRoom] = useState(null)
+  const [lookingAt, setLookingAt] = useState(null)
   const animationRef = useRef(null)
-  const artTexturesRef = useRef([])
-  const inPortalRef = useRef(false)
 
-  // Player state
+  // Player state - start in center of museum
   const playerRef = useRef({
-    x: 8,
-    y: 8,
-    dirX: -1,
-    dirY: 0,
-    planeX: 0,
-    planeY: 0.66,
+    x: 10,
+    y: 10,
+    dirX: 0,
+    dirY: -1,
+    planeX: 0.66,
+    planeY: 0,
     moveSpeed: 0.05,
     rotSpeed: 0.03
   })
@@ -75,38 +116,12 @@ export default function Raycaster({ onRoomEnter, onPortalTouch }) {
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
 
-    // Check portal collision - check if player is standing on portal
-    const checkPortalCollision = () => {
-      const player = playerRef.current
-      const px = Math.floor(player.x)
-      const py = Math.floor(player.y)
-
-      // Check current cell
-      const cellType = worldMap[py]?.[px]
-
-      if (cellType >= 5 && cellType <= 7 && portals[cellType]) {
-        if (!inPortalRef.current) {
-          inPortalRef.current = true
-          const portal = portals[cellType]
-          console.log('Portal detected! Type:', cellType, 'Room:', portal.room, 'Position:', px, py)
-
-          // Small delay to ensure state update
-          setTimeout(() => {
-            if (onPortalTouch) {
-              console.log('Calling onPortalTouch with:', portal.room)
-              onPortalTouch(portal.room)
-            } else {
-              console.log('onPortalTouch is undefined!')
-            }
-          }, 100)
-        }
-      } else {
-        inPortalRef.current = false
-      }
-    }
+    // Track what player is looking at (local to render loop)
+    let centerLook = { type: 0, x: 0, y: 0, dist: 999 }
 
     // Raycasting render loop
     const render = () => {
+      centerLook = { type: 0, x: 0, y: 0, dist: 999 }
       const player = playerRef.current
       const keys = keysRef.current
 
@@ -150,10 +165,10 @@ export default function Raycaster({ onRoomEnter, onPortalTouch }) {
         player.planeY = oldPlaneX * Math.sin(-player.rotSpeed) + player.planeY * Math.cos(-player.rotSpeed)
       }
 
-      // Clear screen
-      ctx.fillStyle = '#fafafa'
+      // Clear screen - museum atmosphere
+      ctx.fillStyle = '#2a2a2a' // Darker ceiling
       ctx.fillRect(0, 0, width, height / 2)
-      ctx.fillStyle = '#e0e0e0'
+      ctx.fillStyle = '#1a1a1a' // Dark floor
       ctx.fillRect(0, height / 2, width, height / 2)
 
       // Raycasting
@@ -218,36 +233,77 @@ export default function Raycaster({ onRoomEnter, onPortalTouch }) {
         const drawStart = Math.max(0, -lineHeight / 2 + height / 2)
         const drawEnd = Math.min(height, lineHeight / 2 + height / 2)
 
-        // Wall rendering - simple solid colors only
+        // Wall rendering - museum themed
         const wallType = worldMap[mapY][mapX]
-        let color = '#e0e0e0'
+        let color = '#3a3a3a' // Default wall color (darker gray)
 
-        // Portals have special animated colors
-        if (wallType >= 5 && wallType <= 7 && portals[wallType]) {
-          const time = Date.now() * 0.001
-          const pulse = Math.sin(time * 3) * 0.3 + 0.7
-          const portalColor = portals[wallType].color
-          const rgb = parseInt(portalColor.slice(1), 16)
-          const r = Math.floor(((rgb >> 16) & 255) * pulse)
-          const g = Math.floor(((rgb >> 8) & 255) * pulse)
-          const b = Math.floor((rgb & 255) * pulse)
+        // Info plaques - blue tint
+        if (wallType === 2) {
+          color = '#2d4a6e'
+        }
+        // Artworks - warm tint
+        else if (wallType === 3) {
+          const time = Date.now() * 0.0005
+          const pulse = Math.sin(time) * 0.1 + 0.9
+          const r = Math.floor(80 * pulse)
+          const g = Math.floor(60 * pulse)
+          const b = Math.floor(40 * pulse)
           color = `rgb(${r},${g},${b})`
         }
 
         // Darken side walls for depth
         if (side === 1) {
-          const rgb = parseInt(color.slice(1), 16)
-          const r = Math.floor(((rgb >> 16) & 255) * 0.7)
-          const g = Math.floor(((rgb >> 8) & 255) * 0.7)
-          const b = Math.floor((rgb & 255) * 0.7)
-          color = `rgb(${r},${g},${b})`
+          const rgb = color.startsWith('#') ? parseInt(color.slice(1), 16) : null
+          if (rgb !== null) {
+            const r = Math.floor(((rgb >> 16) & 255) * 0.6)
+            const g = Math.floor(((rgb >> 8) & 255) * 0.6)
+            const b = Math.floor((rgb & 255) * 0.6)
+            color = `rgb(${r},${g},${b})`
+          } else {
+            // Already rgb format
+            color = color.replace(/rgb\((\d+),(\d+),(\d+)\)/, (_, r, g, b) =>
+              `rgb(${Math.floor(r*0.6)},${Math.floor(g*0.6)},${Math.floor(b*0.6)})`
+            )
+          }
+        }
+
+        // Track what we're looking at (center of screen)
+        if (x === Math.floor(width / 2)) {
+          centerLook = { type: wallType, x: mapX, y: mapY, dist: perpWallDist }
         }
 
         ctx.fillStyle = color
         ctx.fillRect(x, drawStart, 1, drawEnd - drawStart)
       }
 
-      checkPortalCollision()
+      // Update looking at info
+      if (centerLook.dist < 3) { // Close enough to read
+        const posKey = `${centerLook.x},${centerLook.y}`
+        const content = contentMap[posKey]
+
+        if (centerLook.type === 2 && content && typeof content === 'string') {
+          // Info plaque
+          const info = museumInfo[content]
+          if (info) {
+            setLookingAt({ type: 'info', ...info })
+          } else {
+            setLookingAt(null)
+          }
+        } else if (centerLook.type === 3 && content !== undefined && typeof content === 'number') {
+          // Artwork
+          const artwork = artworks[content]
+          if (artwork) {
+            setLookingAt({ type: 'art', ...artwork })
+          } else {
+            setLookingAt(null)
+          }
+        } else {
+          setLookingAt(null)
+        }
+      } else {
+        setLookingAt(null)
+      }
+
       animationRef.current = requestAnimationFrame(render)
     }
 
@@ -263,7 +319,7 @@ export default function Raycaster({ onRoomEnter, onPortalTouch }) {
   }, [currentRoom, onRoomEnter])
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <div style={{ position: 'relative', width: '100%', height: '100%', background: '#000' }}>
       <canvas
         ref={canvasRef}
         width={800}
@@ -275,41 +331,101 @@ export default function Raycaster({ onRoomEnter, onPortalTouch }) {
         }}
       />
 
-      {/* Compass Minimap */}
+      {/* Museum Title */}
       <div
         style={{
           position: 'absolute',
-          top: '40px',
+          top: '30px',
           left: '50%',
           transform: 'translateX(-50%)',
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          color: 'rgba(255, 255, 255, 0.9)',
+          textAlign: 'center',
+          letterSpacing: '3px',
+          textTransform: 'uppercase',
+          textShadow: '0 2px 8px rgba(0,0,0,0.8)'
+        }}
+      >
+        Museu de Imagens do Inconsciente
+      </div>
+
+      {/* Information Display */}
+      {lookingAt && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '80px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            maxWidth: '600px',
+            background: 'rgba(0, 0, 0, 0.9)',
+            border: '1px solid rgba(26, 115, 232, 0.5)',
+            borderRadius: '8px',
+            padding: '20px 30px',
+            fontFamily: 'monospace',
+            color: '#fff',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+            animation: 'fadeIn 0.3s ease'
+          }}
+        >
+          <div style={{
+            fontSize: '16px',
+            fontWeight: 'bold',
+            marginBottom: '10px',
+            color: '#1a73e8',
+            letterSpacing: '1px'
+          }}>
+            {lookingAt.type === 'info' ? lookingAt.title : lookingAt.title}
+          </div>
+          <div style={{
+            fontSize: '13px',
+            lineHeight: '1.6',
+            color: 'rgba(255, 255, 255, 0.85)'
+          }}>
+            {lookingAt.type === 'info' ? lookingAt.content : (
+              <>
+                <div style={{ marginBottom: '8px' }}>
+                  <span style={{ color: '#1a73e8' }}>Artist:</span> {lookingAt.artist}
+                </div>
+                <div>{lookingAt.description}</div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Minimap */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '30px',
+          right: '30px',
           width: '180px',
           height: '180px',
-          background: 'rgba(255, 255, 255, 0.95)',
-          border: '1px solid #e0e0e0',
-          borderRadius: '50%',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+          background: 'rgba(0, 0, 0, 0.8)',
+          border: '1px solid rgba(26, 115, 232, 0.3)',
+          borderRadius: '4px',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.5)',
           padding: '10px'
         }}
       >
-        <svg width="160" height="160" viewBox="0 0 16 16" style={{ filter: 'contrast(1.2)' }}>
+        <svg width="160" height="160" viewBox="0 0 20 20">
           {worldMap.map((row, y) =>
             row.map((cell, x) => {
               if (cell > 0) {
-                let color = '#999'
-                let opacity = 0.6
+                let color = '#444'
+                let opacity = 0.8
 
-                // Portals
-                if (cell === 5) {
-                  color = '#4ecdc4'
-                  opacity = 0.9
+                // Info plaques
+                if (cell === 2) {
+                  color = '#2d4a6e'
+                  opacity = 1
                 }
-                else if (cell === 6) {
-                  color = '#ff6b6b'
-                  opacity = 0.9
-                }
-                else if (cell === 7) {
-                  color = '#1a73e8'
-                  opacity = 0.9
+                // Artworks
+                else if (cell === 3) {
+                  color = '#8b6f47'
+                  opacity = 1
                 }
 
                 return (
@@ -327,7 +443,7 @@ export default function Raycaster({ onRoomEnter, onPortalTouch }) {
               return null
             })
           )}
-          {/* Player position - updates with render */}
+          {/* Player position */}
           <circle
             cx={playerRef.current.x}
             cy={playerRef.current.y}
@@ -351,20 +467,27 @@ export default function Raycaster({ onRoomEnter, onPortalTouch }) {
         style={{
           position: 'absolute',
           bottom: '30px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          background: 'rgba(255, 255, 255, 0.95)',
-          padding: '12px 20px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-          fontSize: '13px',
-          color: '#666',
-          textAlign: 'center'
+          left: '30px',
+          background: 'rgba(0, 0, 0, 0.8)',
+          border: '1px solid rgba(26, 115, 232, 0.3)',
+          padding: '12px 16px',
+          borderRadius: '4px',
+          fontFamily: 'monospace',
+          fontSize: '12px',
+          color: 'rgba(255, 255, 255, 0.7)',
+          lineHeight: '1.6'
         }}
       >
-        <strong style={{ color: '#333' }}>WASD</strong> or <strong style={{ color: '#333' }}>Arrow Keys</strong> to move • Walk into colored portals to enter sections
+        <div><strong style={{ color: '#1a73e8' }}>WASD</strong> or <strong style={{ color: '#1a73e8' }}>Arrows</strong> to move</div>
+        <div style={{ marginTop: '4px', fontSize: '11px' }}>Walk close to blue plaques and artworks</div>
       </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+          to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+      `}</style>
     </div>
   )
 }

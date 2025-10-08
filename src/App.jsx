@@ -1,283 +1,365 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Raycaster from './Raycaster'
 
+function MinimapNav({ currentSection, onNavigate }) {
+  const [hoveredSection, setHoveredSection] = useState(null)
+
+  const sections = [
+    { id: 'projects', label: 'Projects', angle: 0 },
+    { id: 'nise', label: 'Museum', angle: 120 },
+    { id: 'about', label: 'About', angle: 240 }
+  ]
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: '30px',
+      left: '30px',
+      width: '100px',
+      height: '100px',
+      zIndex: 1000,
+      fontFamily: 'monospace'
+    }}>
+      {/* Outer ring */}
+      <div style={{
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        background: 'rgba(0, 0, 0, 0.5)',
+        backdropFilter: 'blur(10px)',
+        transition: 'border-color 0.3s ease'
+      }} />
+
+      {/* Navigation points */}
+      {sections.map((section) => {
+        const angle = (section.angle - 90) * (Math.PI / 180)
+        const radius = 35
+        const x = 50 + Math.cos(angle) * radius
+        const y = 50 + Math.sin(angle) * radius
+        const isActive = currentSection === section.id
+        const isHovered = hoveredSection === section.id
+
+        return (
+          <div
+            key={section.id}
+            onMouseEnter={() => setHoveredSection(section.id)}
+            onMouseLeave={() => setHoveredSection(null)}
+            onClick={() => onNavigate(section.id)}
+            title={section.label}
+            style={{
+              position: 'absolute',
+              left: `${x}px`,
+              top: `${y}px`,
+              transform: 'translate(-50%, -50%)',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <div style={{
+              width: isActive ? '10px' : isHovered ? '8px' : '6px',
+              height: isActive ? '10px' : isHovered ? '8px' : '6px',
+              borderRadius: '50%',
+              background: isActive ? '#fff' : isHovered ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.4)',
+              boxShadow: isHovered && !isActive ? '0 0 10px rgba(255, 255, 255, 0.5)' : 'none',
+              transition: 'all 0.2s ease'
+            }} />
+
+            {/* Hover ripple effect */}
+            {isHovered && !isActive && (
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                animation: 'ripple 1s ease-out infinite'
+              }} />
+            )}
+          </div>
+        )
+      })}
+
+      {/* Center dot */}
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '4px',
+        height: '4px',
+        borderRadius: '50%',
+        background: 'rgba(255, 255, 255, 0.6)'
+      }} />
+
+      <style>{`
+        @keyframes ripple {
+          0% {
+            transform: translate(-50%, -50%) scale(0.5);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(2);
+            opacity: 0;
+          }
+        }
+      `}</style>
+    </div>
+  )
+}
+
+function ProjectGraph() {
+  const [selectedNode, setSelectedNode] = useState(null)
+  const [hoveredNode, setHoveredNode] = useState(null)
+
+  const projects = [
+    { id: 1, name: 'L1NE', type: 'STARTUP', x: 50, y: 20, connections: [2, 5], link: 'https://github.com/l1ne-company/.github' },
+    { id: 2, name: 'blink', type: 'OSS', x: 30, y: 40, connections: [3], link: 'https://github.com/open-sh/blink' },
+    { id: 3, name: 'hexis-school', type: 'OSS', x: 20, y: 60, connections: [6], link: 'https://github.com/c0utin/hexis-school' },
+    { id: 4, name: 'guidorizzi', type: 'RESEARCH', x: 70, y: 40, connections: [5], link: 'https://github.com/c0utin/guidorizzi' },
+    { id: 5, name: 'toga', type: 'INFRA', x: 60, y: 60, connections: [8], link: 'https://github.com/c0utin/toga' },
+    { id: 6, name: 'tcp-no-reason', type: 'OSS', x: 40, y: 80, connections: [7], link: 'https://github.com/c0utin/tcp-no-reason' },
+    { id: 7, name: 'vex', type: 'HACKATHON', x: 50, y: 95, connections: [], link: 'https://github.com/c0utin/vex' },
+    { id: 8, name: 'Trustless Cards', type: 'HACKATHON', x: 75, y: 75, connections: [9], link: 'https://github.com/Trustless-Card/trustless-cards' },
+    { id: 9, name: 'Marselo', type: 'HACKATHON', x: 85, y: 55, connections: [10], link: 'https://github.com/marselo-software/marselo-coprocessor' },
+    { id: 10, name: 'Data Mining', type: 'HACKATHON', x: 80, y: 35, connections: [11], link: 'https://github.com/c0utin/data_mining_motoko' },
+    { id: 11, name: 'Law Hunter', type: 'PROF', x: 65, y: 15, connections: [12], link: 'https://www.linkedin.com/feed/update/urn:li:activity:7250521610812604416/' },
+    { id: 12, name: 'Asimov', type: 'PROF', x: 45, y: 5, connections: [], link: 'https://www.gov.br/cvm/pt-br/assuntos/noticias/2024/cvm-recebe-primeira-entrega-referente-a-parceria-com-o-inteli' }
+  ]
+
+  return (
+    <div style={{
+      width: '100vw',
+      height: '100vh',
+      position: 'relative',
+      background: '#000',
+      overflow: 'hidden',
+      fontFamily: 'system-ui, -apple-system, sans-serif'
+    }}>
+      {/* Simple header */}
+      <div style={{
+        position: 'absolute',
+        top: '30px',
+        right: '30px',
+        fontSize: '0.875rem',
+        color: 'rgba(255, 255, 255, 0.6)',
+        zIndex: 10
+      }}>
+        <a href="https://github.com/c0utin" target="_blank" rel="noopener noreferrer" style={{
+          color: 'inherit',
+          textDecoration: 'none'
+        }}>
+          @c0utin
+        </a>
+      </div>
+
+      {/* Graph SVG */}
+      <svg style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 1
+      }}>
+        {/* Draw connections */}
+        {projects.map(project =>
+          project.connections.map(targetId => {
+            const target = projects.find(p => p.id === targetId)
+            if (!target) return null
+
+            const isHighlighted = hoveredNode === project.id || hoveredNode === target.id
+
+            return (
+              <line
+                key={`${project.id}-${targetId}`}
+                x1={`${project.x}%`}
+                y1={`${project.y}%`}
+                x2={`${target.x}%`}
+                y2={`${target.y}%`}
+                stroke={isHighlighted ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 255, 255, 0.15)'}
+                strokeWidth="1"
+                style={{ transition: 'all 0.3s ease' }}
+              />
+            )
+          })
+        )}
+      </svg>
+
+      {/* Project nodes */}
+      {projects.map(project => {
+        const isSelected = selectedNode === project.id
+        const isHovered = hoveredNode === project.id
+        const showInfo = isHovered || isSelected
+
+        return (
+          <div
+            key={project.id}
+            onMouseEnter={() => setHoveredNode(project.id)}
+            onMouseLeave={() => setHoveredNode(null)}
+            onClick={() => setSelectedNode(isSelected ? null : project.id)}
+            style={{
+              position: 'absolute',
+              left: `${project.x}%`,
+              top: `${project.y}%`,
+              transform: 'translate(-50%, -50%)',
+              cursor: 'pointer',
+              zIndex: showInfo ? 5 : 2
+            }}
+          >
+            {/* Node */}
+            <div style={{
+              width: showInfo ? '12px' : '8px',
+              height: showInfo ? '12px' : '8px',
+              borderRadius: '50%',
+              background: '#fff',
+              boxShadow: isHovered ? '0 0 12px rgba(255, 255, 255, 0.6)' : 'none',
+              transition: 'all 0.2s ease'
+            }} />
+
+            {/* Label */}
+            <div style={{
+              position: 'absolute',
+              top: '100%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              marginTop: '8px',
+              fontSize: '0.75rem',
+              color: showInfo ? '#fff' : 'rgba(255, 255, 255, 0.5)',
+              whiteSpace: 'nowrap',
+              transition: 'color 0.2s ease'
+            }}>
+              {project.name}
+            </div>
+
+            {/* Info panel on hover/select */}
+            {showInfo && (
+              <div style={{
+                position: 'absolute',
+                top: '120%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                marginTop: '20px',
+                padding: '0.75rem 1rem',
+                background: 'rgba(0, 0, 0, 0.9)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '4px',
+                fontSize: '0.75rem',
+                color: 'rgba(255, 255, 255, 0.7)',
+                whiteSpace: 'nowrap',
+                zIndex: 10,
+                animation: 'fadeIn 0.2s ease'
+              }}>
+                <div style={{ marginBottom: '0.5rem', color: '#fff' }}>
+                  {project.name}
+                </div>
+                <div style={{ fontSize: '0.625rem', marginBottom: '0.75rem' }}>
+                  {project.type}
+                </div>
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: '#fff',
+                    textDecoration: 'none',
+                    fontSize: '0.75rem'
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  View →
+                </a>
+              </div>
+            )}
+          </div>
+        )
+      })}
+
+      <style>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-4px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+          }
+        }
+      `}</style>
+    </div>
+  )
+}
+
 export default function App() {
-  const [mode, setMode] = useState('raycaster') // 'raycaster' or 'website'
-  const [currentSection, setCurrentSection] = useState(null)
+  const [currentSection, setCurrentSection] = useState('projects')
 
-  const handlePortalTouch = (room) => {
-    setMode('website')
-    setCurrentSection(room)
-  }
-
-  const handleBackToRaycaster = () => {
-    setMode('raycaster')
-    setCurrentSection(null)
+  const handleNavigate = (sectionId) => {
+    setCurrentSection(sectionId)
   }
 
   return (
-    <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: mode === 'raycaster' ? 'hidden' : 'auto', background: '#ffffff' }}>
-      {mode === 'raycaster' ? (
-        <Raycaster onPortalTouch={handlePortalTouch} />
-      ) : (
-        <>
-          {/* Navigation */}
-          <nav style={{
-            position: 'fixed',
-            top: 0,
-            width: '100%',
-            background: 'rgba(255, 255, 255, 0.98)',
-            backdropFilter: 'blur(10px)',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
-            zIndex: 1000,
-            padding: '1rem 2rem'
+    <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: currentSection === 'nise' ? 'hidden' : 'auto', background: currentSection === 'nise' ? '#000000' : '#0a0a0a' }}>
+      {/* Minimap Navigation - Always visible */}
+      <MinimapNav currentSection={currentSection} onNavigate={handleNavigate} />
+
+      {/* Projects Section - Graph Pathway */}
+      {currentSection === 'projects' && (
+        <ProjectGraph />
+      )}
+
+      {/* Nise Museum - Raycaster */}
+      {currentSection === 'nise' && (
+        <Raycaster onPortalTouch={(room) => setCurrentSection(room)} />
+      )}
+
+      {/* About - Posts Section */}
+      {currentSection === 'about' && (
+        <div style={{
+          width: '100vw',
+          minHeight: '100vh',
+          position: 'relative',
+          background: '#000',
+          fontFamily: 'monospace',
+          padding: '100px 30px 30px 30px',
+          overflowY: 'auto'
+        }}>
+          <div style={{
+            maxWidth: '800px',
+            margin: '0 auto'
           }}>
             <div style={{
-              maxWidth: '1400px',
-              margin: '0 auto',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
+              fontSize: '0.75rem',
+              color: '#666',
+              marginBottom: '1rem',
+              letterSpacing: '2px'
             }}>
-              <button
-                onClick={handleBackToRaycaster}
-                style={{
-                  fontSize: '1.5rem',
-                  fontWeight: '500',
-                  color: '#202124',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-                }}
-              >
-                Nise
-              </button>
-              <div style={{ display: 'flex', gap: '2rem' }}>
-                <a href="https://github.com/c0utin" target="_blank" rel="noopener noreferrer" style={{
-                  color: '#5f6368',
-                  textDecoration: 'none',
-                  fontSize: '0.95rem',
-                  transition: 'color 0.3s ease'
-                }}>
-                  GitHub
-                </a>
-              </div>
+              [ POSTS ]
             </div>
-          </nav>
 
-            {/* Projects Section */}
-            {currentSection === 'projects' && (
-              <section style={{
-                padding: '5rem 2rem',
-                background: '#ffffff',
-                marginTop: '60px',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-              }}>
-                <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-                  <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                    <h2 style={{
-                      fontFamily: 'Georgia, serif',
-                      fontSize: '2.5rem',
-                      color: '#202124',
-                      marginBottom: '1rem'
-                    }}>
-                      Projects & Work
-                    </h2>
-                    <p style={{
-                      fontSize: '1.1rem',
-                      color: '#5f6368',
-                      maxWidth: '600px',
-                      margin: '0 auto'
-                    }}>
-                      Open source contributions, startups, and professional development
-                    </p>
-                  </div>
+            <h2 style={{
+              fontSize: '2rem',
+              color: '#fff',
+              marginBottom: '3rem',
+              fontWeight: '700'
+            }}>
+              Writing & Thoughts
+            </h2>
 
-                  <div style={{
-                    display: 'flex',
-                    gap: '2rem',
-                    overflowX: 'auto',
-                    scrollBehavior: 'smooth',
-                    padding: '1rem 0 2rem 0',
-                    scrollbarWidth: 'none'
-                  }}>
-                    {/* L1NE Company Card */}
-                    <div style={{
-                      minWidth: '380px',
-                      background: '#f8f9fa',
-                      borderRadius: '12px',
-                      overflow: 'hidden',
-                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                    }}>
-                      <div style={{
-                        height: '200px',
-                        background: 'linear-gradient(135deg, #000 0%, #00ff00 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#00ff00',
-                        fontSize: '1.8rem',
-                        fontWeight: 'bold',
-                        position: 'relative'
-                      }}>
-                        <span style={{
-                          position: 'absolute',
-                          top: '10px',
-                          right: '10px',
-                          background: '#00ff00',
-                          color: '#000',
-                          padding: '4px 12px',
-                          borderRadius: '20px',
-                          fontSize: '0.75rem'
-                        }}>STARTUP</span>
-                        L1NE Company
-                      </div>
-                      <div style={{ padding: '1.5rem' }}>
-                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.8rem', color: '#202124' }}>
-                          Cloud-Native Without Containers
-                        </h3>
-                        <p style={{ color: '#5f6368', lineHeight: '1.5', marginBottom: '1rem', fontSize: '0.95rem' }}>
-                          Building cloud-native paradigm on NixOS only. No containers, no Kubernetes.
-                        </p>
-                        <a href="https://github.com/l1ne-company/.github" target="_blank" rel="noopener noreferrer" style={{
-                          color: '#1a73e8',
-                          textDecoration: 'none',
-                          fontSize: '0.9rem'
-                        }}>View Startup →</a>
-                      </div>
-                    </div>
-
-                    {/* Nise Raycaster Card */}
-                    <div style={{
-                      minWidth: '380px',
-                      background: '#f8f9fa',
-                      borderRadius: '12px',
-                      overflow: 'hidden',
-                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                    }}>
-                      <div style={{
-                        height: '200px',
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '1.8rem',
-                        fontWeight: 'bold'
-                      }}>
-                        Nise
-                      </div>
-                      <div style={{ padding: '1.5rem' }}>
-                        <h3 style={{ fontSize: '1.3rem', marginBottom: '0.8rem', color: '#202124' }}>
-                          Raycaster Portfolio
-                        </h3>
-                        <p style={{ color: '#5f6368', lineHeight: '1.5', marginBottom: '1rem', fontSize: '0.95rem' }}>
-                          First-person 3D portfolio using classic raycasting techniques.
-                        </p>
-                        <a href="https://github.com/c0utin/nise" target="_blank" rel="noopener noreferrer" style={{
-                          color: '#1a73e8',
-                          textDecoration: 'none',
-                          fontSize: '0.9rem'
-                        }}>View Project →</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* Posts Section */}
-            {currentSection === 'posts' && (
-              <section style={{
-                padding: '5rem 2rem',
-                background: '#ffffff',
-                marginTop: '60px',
-                minHeight: '60vh',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-              }}>
-                <div style={{ textAlign: 'center', maxWidth: '600px' }}>
-                  <h2 style={{
-                    fontFamily: 'Georgia, serif',
-                    fontSize: '2.5rem',
-                    color: '#202124',
-                    marginBottom: '1rem'
-                  }}>
-                    Posts
-                  </h2>
-                  <p style={{ fontSize: '1.1rem', color: '#5f6368' }}>
-                    Blog posts and articles coming soon...
-                  </p>
-                </div>
-              </section>
-            )}
-
-            {/* Nise Tribute Section */}
-            {currentSection === 'nise' && (
-              <section style={{
-                padding: '5rem 2rem',
-                background: '#f8f9fa',
-                marginTop: '60px',
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-              }}>
-                <div style={{
-                  maxWidth: '1200px',
-                  margin: '0 auto',
-                  display: 'grid',
-                  gridTemplateColumns: '1fr',
-                  gap: '4rem'
-                }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <h2 style={{
-                      fontFamily: 'Georgia, serif',
-                      fontSize: '2.5rem',
-                      color: '#202124',
-                      marginBottom: '1.5rem'
-                    }}>
-                      Honoring Nise da Silveira
-                    </h2>
-                    <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'left' }}>
-                      <p style={{ color: '#5f6368', lineHeight: '1.8', marginBottom: '1.5rem' }}>
-                        This project pays homage to Nise da Silveira, a revolutionary Brazilian psychiatrist
-                        who transformed mental health treatment through art and compassion. She rejected the
-                        aggressive treatments of her time, instead championing creative expression as a
-                        pathway to healing.
-                      </p>
-                      <p style={{ color: '#5f6368', lineHeight: '1.8', marginBottom: '1.5rem' }}>
-                        At the Museum of Images of the Unconscious, which she founded in 1952, Silveira
-                        demonstrated that art could be a window into the human psyche, allowing patients
-                        to express what words could not capture. Her work proved that creativity and
-                        dignity were fundamental to mental health treatment.
-                      </p>
-                      <p style={{ color: '#5f6368', lineHeight: '1.8', marginBottom: '2rem' }}>
-                        Just as Silveira saw patterns and meaning in the artistic expressions of her patients,
-                        this raycasting portfolio explores the beauty that emerges from mathematical rules—a
-                        different kind of unconscious, but equally profound in its revelations.
-                      </p>
-                      <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-                        <a
-                          href="https://pt.wikipedia.org/wiki/Nise_da_Silveira"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            color: '#1a73e8',
-                            textDecoration: 'none',
-                            fontWeight: '500',
-                            fontSize: '1.1rem'
-                          }}
-                        >
-                          Read more about her life and work →
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            )}
-        </>
+            <div style={{
+              fontSize: '0.875rem',
+              lineHeight: '1.8',
+              color: 'rgba(255, 255, 255, 0.6)',
+              textAlign: 'center',
+              padding: '4rem 2rem'
+            }}>
+              Coming soon...
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
