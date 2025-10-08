@@ -3,6 +3,8 @@ import Raycaster from './Raycaster'
 
 function MinimapNav({ currentSection, onNavigate }) {
   const [hoveredSection, setHoveredSection] = useState(null)
+  const [needleAngle, setNeedleAngle] = useState(0)
+  const [showInfo, setShowInfo] = useState(false)
 
   const sections = [
     { id: 'projects', label: 'Projects', angle: 0 },
@@ -10,26 +12,49 @@ function MinimapNav({ currentSection, onNavigate }) {
     { id: 'about', label: 'About', angle: 240 }
   ]
 
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      // Compass is at top: 30px, left: 30px, size: 100px
+      const compassCenterX = 30 + 50
+      const compassCenterY = 30 + 50
+
+      const dx = e.clientX - compassCenterX
+      const dy = e.clientY - compassCenterY
+
+      // Calculate angle in degrees (0 = north/up)
+      const angle = Math.atan2(dx, -dy) * (180 / Math.PI)
+      setNeedleAngle(angle)
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    return () => window.removeEventListener('mousemove', handleMouseMove)
+  }, [])
+
   return (
-    <div style={{
-      position: 'fixed',
-      top: '30px',
-      left: '30px',
-      width: '100px',
-      height: '100px',
-      zIndex: 1000,
-      fontFamily: 'monospace'
-    }}>
+    <div
+      style={{
+        position: 'fixed',
+        top: '30px',
+        left: '30px',
+        width: '100px',
+        height: '100px',
+        zIndex: 1000,
+        fontFamily: 'monospace'
+      }}
+      onMouseEnter={() => setShowInfo(true)}
+      onMouseLeave={() => setShowInfo(false)}
+    >
       {/* Outer ring */}
       <div style={{
         position: 'absolute',
         width: '100%',
         height: '100%',
         borderRadius: '50%',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
+        border: `1px solid rgba(255, 255, 255, ${showInfo ? 0.4 : 0.2})`,
         background: 'rgba(0, 0, 0, 0.5)',
         backdropFilter: 'blur(10px)',
-        transition: 'border-color 0.3s ease'
+        transition: 'all 0.3s ease',
+        boxShadow: showInfo ? '0 0 20px rgba(255, 255, 255, 0.1)' : 'none'
       }} />
 
       {/* Navigation points */}
@@ -96,16 +121,17 @@ function MinimapNav({ currentSection, onNavigate }) {
         background: 'rgba(255, 255, 255, 0.6)'
       }} />
 
-      {/* Compass needle pointing north */}
+      {/* Compass needle pointing toward mouse */}
       <svg
         style={{
           position: 'absolute',
           top: '50%',
           left: '50%',
-          transform: 'translate(-50%, -50%)',
+          transform: `translate(-50%, -50%) rotate(${needleAngle}deg)`,
           width: '40px',
           height: '40px',
-          pointerEvents: 'none'
+          pointerEvents: 'none',
+          transition: 'transform 0.15s ease-out'
         }}
         viewBox="0 0 40 40"
       >
@@ -121,6 +147,27 @@ function MinimapNav({ currentSection, onNavigate }) {
         />
       </svg>
 
+      {/* Hover info tooltip */}
+      {showInfo && (
+        <div style={{
+          position: 'absolute',
+          left: '110px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          background: 'rgba(0, 0, 0, 0.9)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: '4px',
+          padding: '8px 12px',
+          whiteSpace: 'nowrap',
+          fontSize: '11px',
+          color: 'rgba(255, 255, 255, 0.8)',
+          animation: 'slideIn 0.2s ease',
+          pointerEvents: 'none'
+        }}>
+          Click sections to navigate
+        </div>
+      )}
+
       <style>{`
         @keyframes ripple {
           0% {
@@ -130,6 +177,16 @@ function MinimapNav({ currentSection, onNavigate }) {
           100% {
             transform: translate(-50%, -50%) scale(2);
             opacity: 0;
+          }
+        }
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(-50%) translateX(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
           }
         }
       `}</style>
