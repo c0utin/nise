@@ -96,6 +96,31 @@ function MinimapNav({ currentSection, onNavigate }) {
         background: 'rgba(255, 255, 255, 0.6)'
       }} />
 
+      {/* Compass needle pointing north */}
+      <svg
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '40px',
+          height: '40px',
+          pointerEvents: 'none'
+        }}
+        viewBox="0 0 40 40"
+      >
+        {/* Red north arrow */}
+        <path
+          d="M 20 8 L 23 20 L 17 20 Z"
+          fill="#ff4444"
+        />
+        {/* White south arrow */}
+        <path
+          d="M 20 32 L 23 20 L 17 20 Z"
+          fill="rgba(255, 255, 255, 0.6)"
+        />
+      </svg>
+
       <style>{`
         @keyframes ripple {
           0% {
