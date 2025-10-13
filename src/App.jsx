@@ -1,8 +1,22 @@
 import { useState, useEffect } from 'react'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useLoader } from '@react-three/fiber'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { OrbitControls } from '@react-three/drei'
 import Raycaster from './Raycaster'
 import Mandala from './modules/Mandala'
-import asciiGif from '/ascii-animation.gif'
+
+function SharinganModel() {
+  const gltf = useLoader(GLTFLoader, '/nise/sharingan_naruto.glb')
+
+  return (
+    <primitive
+      object={gltf.scene}
+      scale={2}
+      position={[0, 0, 0]}
+      rotation={[0, 0, 0]}
+    />
+  )
+}
 
 function MinimapNav({ currentSection, onNavigate }) {
   const [hoveredSection, setHoveredSection] = useState(null)
@@ -379,7 +393,7 @@ function ProjectGraph() {
   )
 }
 
-function LandingPage({ onEnter }) {
+function LandingPage({ onEnter, onNavigate }) {
   const [buttonClicks, setButtonClicks] = useState(0)
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 })
   const [isShaking, setIsShaking] = useState(false)
@@ -387,6 +401,63 @@ function LandingPage({ onEnter }) {
   const [showWarning, setShowWarning] = useState(false)
   const [isChaos, setIsChaos] = useState(false)
   const [isDestroying, setIsDestroying] = useState(false)
+
+  // Load Unicorn Studio script
+  useEffect(() => {
+    if (!window.UnicornStudio) {
+      window.UnicornStudio = { isInitialized: false }
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.33/dist/unicornStudio.umd.js'
+      script.onload = () => {
+        if (!window.UnicornStudio.isInitialized) {
+          window.UnicornStudio.init()
+          window.UnicornStudio.isInitialized = true
+        }
+      }
+      ;(document.head || document.body).appendChild(script)
+    }
+
+    // Hide the badge after it's rendered
+    const hideBadge = () => {
+      // Target by href
+      const badges = document.querySelectorAll('a[href*="unicorn.studio"]')
+      badges.forEach(badge => {
+        badge.style.display = 'none !important'
+        badge.style.visibility = 'hidden !important'
+        badge.style.opacity = '0 !important'
+      })
+
+      // Target by alt text
+      const images = document.querySelectorAll('img[alt*="unicorn"]')
+      images.forEach(img => {
+        if (img.parentElement) {
+          img.parentElement.style.display = 'none !important'
+          img.parentElement.style.visibility = 'hidden !important'
+          img.parentElement.style.opacity = '0 !important'
+        }
+        img.style.display = 'none !important'
+        img.style.visibility = 'hidden !important'
+        img.style.opacity = '0 !important'
+      })
+
+      // Target by exact alt text
+      const exactImages = document.querySelectorAll('img[alt="Made with unicorn.studio"]')
+      exactImages.forEach(img => {
+        if (img.parentElement) {
+          img.parentElement.style.display = 'none !important'
+          img.parentElement.style.visibility = 'hidden !important'
+          img.parentElement.style.opacity = '0 !important'
+        }
+        img.style.display = 'none !important'
+      })
+    }
+
+    // Check repeatedly for the badge and hide it
+    const interval = setInterval(hideBadge, 100)
+    setTimeout(() => clearInterval(interval), 10000) // Stop after 10 seconds
+
+    return () => clearInterval(interval)
+  }, [])
 
   const handleButtonClick = () => {
     if (buttonClicks === 0) {
@@ -545,6 +616,29 @@ function LandingPage({ onEnter }) {
       animation: isChaos ? 'page-destroy 3s ease-in-out' : 'none',
       filter: isChaos ? 'hue-rotate(180deg) saturate(3)' : 'none'
     }}>
+      <style>{`
+        a[href*="unicorn.studio"],
+        a[href*="unicorn"] {
+          display: none !important;
+        }
+
+        /* Additional targeting for the badge */
+        a[href*="utm_source=public-url"] {
+          display: none !important;
+        }
+      `}</style>
+      {/* Cover for Unicorn Studio badge - large black box */}
+      <div style={{
+        position: 'fixed',
+        bottom: '0px',
+        left: '0px',
+        right: '0px',
+        width: '100%',
+        height: '120px',
+        background: '#000',
+        zIndex: 9999999999,
+        pointerEvents: 'none'
+      }} />
       {/* FATAL ERROR OVERLAY */}
       {isChaos && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none" style={{
@@ -623,18 +717,16 @@ function LandingPage({ onEnter }) {
           </div>
         </div>
 
-        {/* Background Animation - ASCII GIF */}
+        {/* Background Animation - Unicorn Studio */}
         <div className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden">
-          <img
-            src={asciiGif}
-            alt=""
-            className="w-full h-full object-cover opacity-40"
+          <div
+            data-us-project="kvwITwojiQbPW2UkzTrP"
             style={{
-              filter: isChaos ? 'brightness(2) contrast(3) hue-rotate(360deg) invert(1)' : 'brightness(0.7)',
-              imageRendering: 'pixelated',
-              transform: isChaos ? 'scale(3) rotate(720deg)' : 'scale(1.2)',
-              minWidth: '100vw',
-              minHeight: '100vh',
+              width: '100%',
+              height: '100%',
+              opacity: 1,
+              filter: isChaos ? 'brightness(2) contrast(3) hue-rotate(360deg) invert(1)' : 'none',
+              transform: isChaos ? 'scale(3) rotate(720deg)' : 'scale(1)',
               animation: isChaos ? 'bg-destroy 2s ease-in-out forwards' : 'none'
             }}
           />
@@ -645,24 +737,6 @@ function LandingPage({ onEnter }) {
           animation: isChaos ? 'content-shatter 2s ease-out forwards' : 'none',
           transform: isChaos ? 'rotate(-15deg) skewX(-20deg)' : 'none'
         }}>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight" style={{
-            animation: isChaos ? 'text-break 1s ease-out forwards' : 'none'
-          }}>
-            Building at the intersection of
-            <br />
-            <span className="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent" style={{
-              animation: isChaos ? 'rainbow-chaos 0.2s infinite' : 'none'
-            }}>
-              art, technology, and open source
-            </span>
-          </h1>
-
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto font-light" style={{
-            animation: isChaos ? 'text-scatter 1.5s ease-out forwards' : 'none'
-          }}>
-            Software engineer passionate about creative coding, generative art, and building innovative solutions
-          </p>
-
           {showWarning && buttonClicks >= 3 && (
             <div className="fixed top-10 left-1/2 -translate-x-1/2 z-50 bg-red-600 text-white px-6 py-3 rounded-lg font-mono text-sm border-2 border-white" style={{
               animation: isChaos ? 'fly-away 1.5s ease-out forwards' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
@@ -826,19 +900,26 @@ function LandingPage({ onEnter }) {
               0%, 100% { transform: scale(1); opacity: 1; }
               50% { transform: scale(1.1); opacity: 0.8; }
             }
+
           `}</style>
         </div>
 
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce text-sm text-gray-500" style={{
+        <div className="absolute left-0 right-0 text-sm text-gray-500" style={{
+          bottom: '0px',
           animation: isChaos ? 'text-explode 0.8s ease-out forwards' : 'bounce 1s infinite',
-          opacity: isChaos ? 0 : 1
+          opacity: isChaos ? 0 : 1,
+          background: '#000',
+          padding: '40px 20px 60px',
+          zIndex: 999999999999,
+          width: '100%',
+          textAlign: 'center'
         }}>
           Scroll ↓
         </div>
       </section>
 
       {/* About Section */}
-      <section className="relative w-full min-h-screen flex items-center justify-center bg-gradient-to-b from-black to-zinc-950 py-20">
+      <section className="relative w-full min-h-screen flex items-center justify-center bg-gradient-to-b from-black to-zinc-950">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-4xl md:text-5xl font-bold mb-8 text-center">About</h2>
 
@@ -874,21 +955,87 @@ function LandingPage({ onEnter }) {
         </div>
       </section>
 
-      {/* Projects Preview Section */}
-      <section className="relative w-full min-h-screen flex items-center justify-center bg-zinc-950 py-20">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-12">Projects</h2>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="w-full py-8 bg-black border-t border-white/10">
-        <div className="max-w-6xl mx-auto px-6 text-center text-white/40 text-sm">
-          <p>© 2025 @c0utin • Built with React & Three.js</p>
-          <div className="mt-2">
-            <a href="https://github.com/c0utin" target="_blank" rel="noopener noreferrer" className="hover:text-white/70 transition-colors">
-              GitHub
-            </a>
+      <footer className="relative w-full bg-black border-t border-white/10 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            {/* Navigation */}
+            <div>
+              <h3 className="text-white font-semibold mb-4">Navigation</h3>
+              <ul className="space-y-2">
+                <li>
+                  <button onClick={() => onNavigate('landing')} className="text-white/60 hover:text-white transition-colors text-left">Home</button>
+                </li>
+                <li>
+                  <button onClick={() => onNavigate('about')} className="text-white/60 hover:text-white transition-colors text-left">About</button>
+                </li>
+                <li>
+                  <button onClick={() => onNavigate('projects')} className="text-white/60 hover:text-white transition-colors text-left">Projects</button>
+                </li>
+                <li>
+                  <button onClick={() => onNavigate('nise')} className="text-white/60 hover:text-white transition-colors text-left">Museum</button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Connect */}
+            <div>
+              <h3 className="text-white font-semibold mb-4">Connect</h3>
+              <ul className="space-y-2">
+                <li>
+                  <a href="https://github.com/c0utin" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors">
+                    GitHub
+                  </a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/coutin420" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors">
+                    Twitter
+                  </a>
+                </li>
+                <li>
+                  <a href="https://linkedin.com/in/rafael-coutinho2004" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors">
+                    LinkedIn
+                  </a>
+                </li>
+		<li>
+		  <a href="https://instagram.com/rcoutin" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors">
+                   Instagram 
+                  </a>
+	  	</li>
+              </ul>
+            </div>
+
+            {/* About */}
+            <div>
+              <h3 className="text-white font-semibold mb-4">@c0utin</h3>
+              <p className="text-white/60 text-sm">
+                Software engineer, computer artist, nerd.
+              </p>
+            </div>
+
+            {/* 3D Model */}
+            <div className="flex items-center justify-center">
+              <div style={{ width: '300px', height: '300px' }}>
+                <Canvas
+                  camera={{ position: [0, 3.5, 8], fov: 50 }}
+                  style={{ background: 'transparent' }}
+                >
+                  <ambientLight intensity={1.5} />
+                  <directionalLight position={[5, 5, 5]} intensity={2} />
+                  <directionalLight position={[-5, 5, -5]} intensity={1} />
+                  <pointLight position={[0, 5, 5]} intensity={1.5} />
+                  <SharinganModel />
+                  <OrbitControls
+                    enableZoom={false}
+                    enablePan={false}
+                    enableRotate={true}
+                    autoRotate={true}
+                    autoRotateSpeed={2}
+                    target={[0, 2.5, 0]}
+                  />
+                </Canvas>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
@@ -909,7 +1056,7 @@ export default function App() {
 
   // Landing page doesn't show navigation
   if (currentSection === 'landing') {
-    return <LandingPage onEnter={handleEnterApp} />
+    return <LandingPage onEnter={handleEnterApp} onNavigate={handleNavigate} />
   }
 
   return (
