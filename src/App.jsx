@@ -4,6 +4,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { OrbitControls } from '@react-three/drei'
 import Raycaster from './Raycaster'
 import Mandala from './modules/Mandala'
+import BlogSection from './blog/BlogSection'
+import BlogPost from './blog/BlogPost'
 
 function SharinganModel() {
   const gltf = useLoader(GLTFLoader, '/nise/sharingan_naruto.glb')
@@ -465,21 +467,14 @@ function LandingPage({ onEnter, onNavigate }) {
     } else if (buttonClicks === 1) {
       setButtonClicks(2)
       const randomX = (Math.random() - 0.5) * 300
-      const downY = window.innerHeight * 0.8
+      const downY = 150
       setButtonPosition({ x: randomX, y: downY })
-
-      setTimeout(() => {
-        window.scrollTo({
-          top: window.innerHeight * 0.5,
-          behavior: 'smooth'
-        })
-      }, 300)
     } else if (buttonClicks === 2) {
       setButtonClicks(3)
       setIsShaking(true)
       setShowWarning(true)
-      const randomX = (Math.random() - 0.5) * 400
-      const randomY = (Math.random() - 0.5) * 200
+      const randomX = (Math.random() - 0.5) * 300
+      const randomY = (Math.random() - 0.5) * 150
       setButtonPosition({ x: randomX, y: randomY })
 
       setTimeout(() => setIsShaking(false), 500)
@@ -490,8 +485,8 @@ function LandingPage({ onEnter, onNavigate }) {
 
       // Aggressive button movement
       const interval = setInterval(() => {
-        const x = (Math.random() - 0.5) * 600
-        const y = (Math.random() - 0.5) * 400
+        const x = (Math.random() - 0.5) * 400
+        const y = (Math.random() - 0.5) * 250
         setButtonPosition({ x, y })
       }, 100)
 
@@ -562,7 +557,9 @@ function LandingPage({ onEnter, onNavigate }) {
   const getButtonStyle = () => {
     const baseStyle = {
       transform: `translate(${buttonPosition.x}px, ${buttonPosition.y}px)`,
-      transition: buttonClicks >= 3 ? 'none' : 'transform 0.3s ease, scale 0.3s ease, background 0.3s ease'
+      transition: buttonClicks >= 3 ? 'none' : 'transform 0.3s ease, scale 0.3s ease, background 0.3s ease',
+      background: '#fff',
+      color: '#000'
     }
 
     if (buttonClicks === 3) {
@@ -627,7 +624,7 @@ function LandingPage({ onEnter, onNavigate }) {
           display: none !important;
         }
       `}</style>
-      {/* Cover for Unicorn Studio badge - large black box */}
+      {/* Cover for Unicorn Studio badge - large box */}
       <div style={{
         position: 'fixed',
         bottom: '0px',
@@ -703,22 +700,33 @@ function LandingPage({ onEnter, onNavigate }) {
             <div className="text-xl font-semibold" style={{
               animation: isChaos ? 'text-explode 1s ease-out' : 'none'
             }}>@c0utin</div>
-            <a
-              href="https://github.com/c0utin"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-400 hover:text-white transition-colors"
-              style={{
-                animation: isChaos ? 'text-explode 1.5s ease-out' : 'none'
-              }}
-            >
-              GitHub
-            </a>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => onNavigate('blog')}
+                className="text-sm text-gray-400 hover:text-white transition-colors"
+                style={{
+                  animation: isChaos ? 'text-explode 1.4s ease-out' : 'none'
+                }}
+              >
+                Posts
+              </button>
+              <a
+                href="https://github.com/c0utin"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gray-400 hover:text-white transition-colors"
+                style={{
+                  animation: isChaos ? 'text-explode 1.5s ease-out' : 'none'
+                }}
+              >
+                GitHub
+              </a>
+            </div>
           </div>
         </div>
 
         {/* Background Animation - Unicorn Studio */}
-        <div className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden" style={{ zIndex: 0 }}>
           <div
             data-us-project="kvwITwojiQbPW2UkzTrP"
             style={{
@@ -744,18 +752,6 @@ function LandingPage({ onEnter, onNavigate }) {
               ⚠️ WARNING: Effect.die() - System will terminate
             </div>
           )}
-
-          <button
-            onClick={handleButtonClick}
-            className="inline-flex items-center gap-3 px-10 py-4 text-lg font-medium bg-white text-black hover:bg-gray-200 rounded-md transition-all duration-300 hover:scale-105"
-            style={getButtonStyle()}
-          >
-            {getButtonText()}
-            {buttonClicks === 0 && <span>→</span>}
-            {buttonClicks === 3 && <span className="ml-2">⚠️</span>}
-            {buttonClicks === 4 && <span className="ml-2 animate-ping">💀</span>}
-            {buttonClicks === 5 && <span className="ml-2">🎉</span>}
-          </button>
 
           <style>{`
             @keyframes shake {
@@ -918,50 +914,131 @@ function LandingPage({ onEnter, onNavigate }) {
         </div>
       </section>
 
+      {/* Button Section */}
+      <div className="relative w-full flex items-center justify-center py-32 bg-black overflow-visible" style={{ minHeight: '600px' }}>
+        <div className="relative" style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button
+            onClick={handleButtonClick}
+            className="inline-flex items-center gap-3 px-10 py-4 text-lg font-medium bg-white text-black hover:bg-gray-200 rounded-md transition-all duration-300 hover:scale-105"
+            style={getButtonStyle()}
+          >
+            {getButtonText()}
+            {buttonClicks === 0 && <span>→</span>}
+            {buttonClicks === 3 && <span className="ml-2">⚠️</span>}
+            {buttonClicks === 4 && <span className="ml-2 animate-ping">💀</span>}
+            {buttonClicks === 5 && <span className="ml-2">🎉</span>}
+          </button>
+        </div>
+      </div>
+
       {/* About Section */}
       <section className="relative w-full min-h-screen flex items-center justify-center bg-gradient-to-b from-black to-zinc-950">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-center">About</h2>
-
-          <div className="space-y-6 text-lg text-white/70 leading-relaxed">
-            <p>
-              I'm a software engineer passionate about pushing the boundaries of what's possible
-              with code. My work spans from low-level systems to creative experiments that blend
-              art and technology.
-            </p>
-
-            <p>
-              Currently building innovative solutions at L1NE while contributing to open source
-              projects and exploring generative art through code.
-            </p>
+        <div className="max-w-5xl mx-auto px-6 py-20">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <h2 className="text-4xl md:text-5xl font-bold text-center">About</h2>
+            {/* Open to Work Badge */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-green-500 rounded-full blur-lg opacity-50 animate-pulse" />
+              <div className="relative px-4 py-2 bg-green-500 text-black font-semibold text-sm rounded-full border-2 border-green-400 shadow-lg">
+                🟢 Open to Work
+              </div>
+            </div>
           </div>
 
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
-              <h3 className="text-xl font-semibold mb-2">Open Source</h3>
-              <p className="text-white/60">Contributing to projects like blink, hexis-school, and more</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-12">
+            {/* Photo */}
+            <div className="flex justify-center">
+              <div className="relative">
+                <img
+                  src="/nise/me.jpeg"
+                  alt="Rafael Coutinho"
+                  className="rounded-lg w-full max-w-md"
+                  style={{
+                    boxShadow: '0 0 30px rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)'
+                  }}
+                />
+              </div>
             </div>
 
-            <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
-              <h3 className="text-xl font-semibold mb-2">Innovation</h3>
-              <p className="text-white/60">Building hackathon winners and research projects</p>
+            {/* About Text */}
+            <div className="space-y-6 text-lg text-white/70 leading-relaxed">
+              <p>
+                I see myself as a <span className="text-white font-semibold">computer artist</span> - someone who uses code
+                as a medium for creative expression. Programming is an art form for me, a way to paint with logic and sculpt with algorithms.
+                My passion lies at the intersection of technology and art, where I believe the best software is not just functional,
+                but expressive, elegant, and thought-provoking.
+              </p>
+
+              {/* Availability Notice */}
+              <div className="mt-8 p-6 bg-gradient-to-r from-white/10 to-white/5 border border-white/20 rounded-lg">
+                <p className="text-white/80 font-medium">
+                  Currently seeking opportunities in software engineering, blockchain, and innovative tech projects.
+                  Available for full-time, contract, or consulting work.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* The All-For-One Pillars */}
+          <div className="mt-16">
+            <h3 className="text-2xl font-bold text-center mb-8 text-white/90">The All-For-One</h3>
+            <p className="text-center text-white/70 mb-8 max-w-3xl mx-auto">
+              My dream is to become the <span className="text-white font-semibold">supreme engineer</span> - the all-for-one.
+              Not just mastering code, but achieving balance across three essential pillars. True mastery comes from the harmony of all three.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
+                <h4 className="text-xl font-semibold mb-2">Engineering</h4>
+                <p className="text-white/60">Pushing the boundaries of what's technically possible through code, art, and innovation</p>
+              </div>
+
+              <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
+                <h4 className="text-xl font-semibold mb-2">Body</h4>
+                <p className="text-white/60">Maintaining physical strength and health as the foundation for everything else</p>
+              </div>
+
+              <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
+                <h4 className="text-xl font-semibold mb-2">Life</h4>
+                <p className="text-white/60">Cultivating meaningful experiences, connections, and balance beyond the screen</p>
+              </div>
             </div>
 
-            <div className="p-6 bg-white/5 border border-white/10 rounded-lg">
-              <h3 className="text-xl font-semibold mb-2">Creative Tech</h3>
-              <p className="text-white/60">Exploring generative art and interactive experiences</p>
+            {/* Philosophy Quotes */}
+            <div className="mt-8 space-y-4">
+              <blockquote className="border-l-4 border-white/20 pl-6 py-2">
+                <p className="italic text-white/60 mb-2">
+                  The unexamined life is not worth living.
+                </p>
+                <cite className="text-white/40 text-sm not-italic">— Socrates</cite>
+              </blockquote>
+
+              <blockquote className="border-l-4 border-white/20 pl-6 py-2">
+                <p className="italic text-white/60 mb-2">
+                  No citizen has the right to be an amateur in the matter of physical training.
+                  What a disgrace it is for a man to grow old without ever seeing the beauty and strength of which his body is capable.
+                </p>
+                <cite className="text-white/40 text-sm not-italic">— Socrates</cite>
+              </blockquote>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Gradient Transition to Footer */}
+      <div style={{
+        width: '100%',
+        height: '150px',
+        background: 'linear-gradient(to bottom, rgba(9, 9, 11, 1), rgba(0, 0, 0, 1))'
+      }} />
+
       {/* Footer */}
-      <footer className="relative w-full bg-black border-t border-white/10 overflow-hidden">
+      <footer className="relative w-full border-t overflow-hidden" style={{ background: '#000', borderColor: 'rgba(255,255,255,0.1)' }}>
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             {/* Navigation */}
             <div>
-              <h3 className="text-white font-semibold mb-4">Navigation</h3>
+              <h3 className="font-semibold mb-4 text-white">Navigation</h3>
               <ul className="space-y-2">
                 <li>
                   <button onClick={() => onNavigate('landing')} className="text-white/60 hover:text-white transition-colors text-left">Home</button>
@@ -980,7 +1057,7 @@ function LandingPage({ onEnter, onNavigate }) {
 
             {/* Connect */}
             <div>
-              <h3 className="text-white font-semibold mb-4">Connect</h3>
+              <h3 className="font-semibold mb-4 text-white">Connect</h3>
               <ul className="space-y-2">
                 <li>
                   <a href="https://github.com/c0utin" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors">
@@ -999,7 +1076,7 @@ function LandingPage({ onEnter, onNavigate }) {
                 </li>
 		<li>
 		  <a href="https://instagram.com/rcoutin" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors">
-                   Instagram 
+                   Instagram
                   </a>
 	  	</li>
               </ul>
@@ -1007,8 +1084,8 @@ function LandingPage({ onEnter, onNavigate }) {
 
             {/* About */}
             <div>
-              <h3 className="text-white font-semibold mb-4">@c0utin</h3>
-              <p className="text-white/60 text-sm">
+              <h3 className="font-semibold mb-4 text-white">@c0utin</h3>
+              <p className="text-sm text-white/60">
                 Software engineer, computer artist, nerd.
               </p>
             </div>
@@ -1045,18 +1122,87 @@ function LandingPage({ onEnter, onNavigate }) {
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState('landing')
+  const [currentPost, setCurrentPost] = useState(null)
+
+  // Handle URL routing on mount and URL changes
+  useEffect(() => {
+    const handleRouting = () => {
+      const hash = window.location.hash.slice(1) // Remove #
+      const params = new URLSearchParams(hash.split('?')[1] || '')
+      const path = hash.split('?')[0]
+
+      // Handle blog post routes: #blog/post-slug
+      if (path.startsWith('blog/')) {
+        const slug = path.replace('blog/', '')
+        if (slug) {
+          setCurrentSection('blog')
+          setCurrentPost(slug)
+        } else {
+          setCurrentSection('blog')
+          setCurrentPost(null)
+        }
+      }
+      // Handle section routes: #projects, #about, etc.
+      else if (path) {
+        setCurrentSection(path)
+        setCurrentPost(null)
+      }
+    }
+
+    // Run on mount
+    handleRouting()
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleRouting)
+    return () => window.removeEventListener('hashchange', handleRouting)
+  }, [])
 
   const handleNavigate = (sectionId) => {
     setCurrentSection(sectionId)
+    setCurrentPost(null)
+    window.location.hash = sectionId
   }
 
   const handleEnterApp = () => {
     setCurrentSection('projects')
+    window.location.hash = 'projects'
+  }
+
+  const handleSelectPost = (slug) => {
+    setCurrentPost(slug)
+    window.location.hash = `blog/${slug}`
+  }
+
+  const handleBackToBlog = () => {
+    setCurrentPost(null)
+    window.location.hash = 'blog'
   }
 
   // Landing page doesn't show navigation
   if (currentSection === 'landing') {
     return <LandingPage onEnter={handleEnterApp} onNavigate={handleNavigate} />
+  }
+
+  // Blog post view
+  if (currentSection === 'blog' && currentPost) {
+    return (
+      <BlogPost
+        slug={currentPost}
+        onNavigate={handleNavigate}
+        onBack={handleBackToBlog}
+        onSelectPost={handleSelectPost}
+      />
+    )
+  }
+
+  // Blog listing view
+  if (currentSection === 'blog') {
+    return (
+      <BlogSection
+        onNavigate={handleNavigate}
+        onSelectPost={handleSelectPost}
+      />
+    )
   }
 
   return (
