@@ -2,25 +2,71 @@
  * Blog Section Component
  *
  * Displays a list of all blog posts with filtering and search capabilities.
+ *
+ * Performance optimizations:
+ * - React.memo for post cards
+ * - useMemo for expensive filtering/sorting
+ * - useCallback for stable references
+ * - LaTeX preloading for faster rendering
+ * - Lazy loading of post components
  */
 
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import { posts, getAllTags, getAllSeries } from './posts'
+import { preloadKatex } from './utils/LaTeX'
 
 // Memoized Post Card Component for better performance
 const PostCard = React.memo(({ post, selectedLang, onSelectPost }) => {
   const meta = post.metadata
   const title = meta.title[selectedLang] || meta.title.en
   const desc = meta.description[selectedLang] || meta.description.en
+  const cardRef = React.useRef(null)
+  const [isVisible, setIsVisible] = React.useState(false)
+
+  // Intersection Observer for lazy rendering
+  React.useEffect(() => {
+    if (!cardRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '100px', threshold: 0.01 }
+    )
+
+    observer.observe(cardRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   const handleClick = useCallback(() => {
     onSelectPost(meta.slug)
   }, [meta.slug, onSelectPost])
 
+  // Skeleton loader while not visible
+  if (!isVisible) {
+    return (
+      <div
+        ref={cardRef}
+        className="bg-white/5 border border-white/10 rounded-lg p-6 contain-paint"
+        style={{ minHeight: '180px' }}
+      >
+        <div className="animate-pulse">
+          <div className="h-4 bg-white/10 rounded w-3/4 mb-3"></div>
+          <div className="h-3 bg-white/5 rounded w-full mb-2"></div>
+          <div className="h-3 bg-white/5 rounded w-5/6"></div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <article
+      ref={cardRef}
       onClick={handleClick}
-      className="group cursor-pointer bg-white/5 border border-white/10 rounded-lg p-6 hover:bg-white/10 hover:border-white/20 transition-all will-change-transform"
+      className="group cursor-pointer bg-white/5 border border-white/10 rounded-lg p-6 hover:bg-white/10 hover:border-white/20 transition-all gpu-accelerate contain-paint"
     >
       {meta.series && (
         <div className="flex items-center gap-1 text-xs text-gray-400 mb-2">
@@ -57,6 +103,11 @@ export default function BlogSection({ onNavigate, onSelectPost }) {
   const [selectedTag, setSelectedTag] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState('all') // 'all', 'series', 'standalone'
+
+  // Preload KaTeX for better performance when viewing posts with LaTeX
+  useEffect(() => {
+    preloadKatex().catch(err => console.warn('Failed to preload KaTeX:', err))
+  }, [])
 
   // Memoize expensive computations
   const allTags = useMemo(() => getAllTags(), [])

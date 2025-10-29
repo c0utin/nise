@@ -10,11 +10,14 @@
  * - Compresses whitespace
  * - Preserves semantic structure
  * - Includes metadata for context
+ * - Extracts LaTeX equations
  *
  * Usage:
  * import { exportForAI } from './utils/aiOptimize'
  * const optimized = exportForAI(postData, 'en')
  */
+
+import { extractLatexContent } from './LaTeX'
 
 /**
  * Extract text content from React component
@@ -61,6 +64,19 @@ export function exportForAI(postData, lang = 'en') {
   if (metadata.keywords && metadata.keywords.length > 0) {
     sections.push(`KEYWORDS: ${metadata.keywords.join(', ')}`)
     sections.push(``)
+  }
+
+  // Extract LaTeX equations from the page if available
+  const blogContent = document.querySelector('.prose-smooth')
+  if (blogContent) {
+    const latexEquations = extractLatexContent(blogContent)
+    if (latexEquations && latexEquations.length > 0) {
+      sections.push(`LATEX_EQUATIONS: ${latexEquations.length} equations found`)
+      latexEquations.forEach((eq, idx) => {
+        sections.push(`EQUATION_${idx + 1}: ${eq}`)
+      })
+      sections.push(``)
+    }
   }
 
   // Content extraction note

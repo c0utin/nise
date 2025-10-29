@@ -3,11 +3,17 @@
  *
  * Displays an individual blog post with controls for language selection,
  * PDF export, and AI-optimized export.
+ *
+ * Supports:
+ * - LaTeX equations via KaTeX
+ * - 3D graphics via Three.js
+ * - Interactive components
+ * - IEEE paper structure
  */
 
 import React, { useState } from 'react'
 import { getPostBySlug } from './posts'
-import { exportToPDF } from './utils/pdfExport'
+import { exportToPDF, exportToLatex } from './utils/pdfExport'
 import { exportForAI } from './utils/aiOptimize'
 
 export default function BlogPost({ slug, onNavigate, onBack, onSelectPost }) {
@@ -101,6 +107,36 @@ export default function BlogPost({ slug, onNavigate, onBack, onSelectPost }) {
     .prose-smooth em {
       color: rgba(255, 255, 255, 0.9);
     }
+
+    /* LaTeX equation styles */
+    .prose-smooth .katex {
+      font-size: 1.1em;
+    }
+
+    .prose-smooth .katex-display {
+      margin: 2rem 0;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      overflow-x: auto;
+    }
+
+    .prose-smooth .katex-inline {
+      padding: 0 0.2em;
+    }
+
+    .prose-smooth .equation-container {
+      margin: 2rem 0;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+    }
+
+    .prose-smooth .equation-number {
+      user-select: none;
+    }
   `
 
   if (!postData) {
@@ -144,6 +180,16 @@ export default function BlogPost({ slug, onNavigate, onBack, onSelectPost }) {
     } catch (error) {
       console.error('AI export failed:', error)
       alert('Failed to export for AI')
+    }
+  }
+
+  const handleExportLatex = () => {
+    try {
+      exportToLatex(postData, selectedLang)
+      alert('LaTeX file exported successfully!')
+    } catch (error) {
+      console.error('LaTeX export failed:', error)
+      alert('Failed to export to LaTeX')
     }
   }
 
@@ -195,7 +241,7 @@ export default function BlogPost({ slug, onNavigate, onBack, onSelectPost }) {
                       className="w-full px-4 py-3 text-left text-sm hover:bg-white/5 transition-colors"
                     >
                       <div className="font-medium">Export as PDF</div>
-                      <div className="text-xs text-gray-400">Printable version</div>
+                      <div className="text-xs text-gray-400">IEEE format with rendered LaTeX</div>
                     </button>
                     <button
                       onClick={() => {

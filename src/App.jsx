@@ -1,11 +1,22 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { Canvas, useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { OrbitControls } from '@react-three/drei'
-import Raycaster from './Raycaster'
-import Mandala from './modules/Mandala'
-import BlogSection from './blog/BlogSection'
-import BlogPost from './blog/BlogPost'
+
+// Lazy load heavy components for better initial load performance
+const Raycaster = lazy(() => import('./Raycaster'))
+const BlogSection = lazy(() => import('./blog/BlogSection'))
+const BlogPost = lazy(() => import('./blog/BlogPost'))
+
+// Loading component for lazy-loaded routes
+const LoadingFallback = () => (
+  <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="text-white text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+      <div className="text-sm text-gray-400">Loading...</div>
+    </div>
+  </div>
+)
 
 function SharinganModel() {
   const gltf = useLoader(GLTFLoader, '/nise/sharingan_naruto.glb')
@@ -32,7 +43,29 @@ function MinimapNav({ currentSection, onNavigate }) {
   ]
 
   useEffect(() => {
+    let rafId = null
+    let lastUpdate = 0
+    const throttleMs = 16 // ~60fps
+
     const handleMouseMove = (e) => {
+      const now = Date.now()
+
+      if (rafId) return // Skip if already scheduled
+
+      if (now - lastUpdate < throttleMs) {
+        // Throttle updates
+        rafId = requestAnimationFrame(() => {
+          rafId = null
+          processMouseMove(e)
+        })
+      } else {
+        processMouseMove(e)
+      }
+    }
+
+    const processMouseMove = (e) => {
+      lastUpdate = Date.now()
+
       // Compass is at top: 30px, left: 30px, size: 100px
       const compassCenterX = 30 + 50
       const compassCenterY = 30 + 50
@@ -45,12 +78,16 @@ function MinimapNav({ currentSection, onNavigate }) {
       setNeedleAngle(angle)
     }
 
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
   }, [])
 
   return (
     <div
+      className="gpu-accelerate contain-layout"
       style={{
         position: 'fixed',
         top: '30px',
@@ -233,14 +270,16 @@ function ProjectGraph() {
   ]
 
   return (
-    <div style={{
-      width: '100vw',
-      height: '100vh',
-      position: 'relative',
-      background: '#000',
-      overflow: 'hidden',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    }}>
+    <div
+      className="gpu-accelerate scroll-container"
+      style={{
+        width: '100vw',
+        height: '100vh',
+        position: 'relative',
+        background: '#000',
+        overflow: 'hidden',
+        fontFamily: 'system-ui, -apple-system, sans-serif'
+      }}>
       {/* Simple header */}
       <div style={{
         position: 'absolute',
@@ -299,6 +338,7 @@ function ProjectGraph() {
         return (
           <div
             key={project.id}
+            className="gpu-accelerate contain-paint"
             onMouseEnter={() => setHoveredNode(project.id)}
             onMouseLeave={() => setHoveredNode(null)}
             onClick={() => setSelectedNode(isSelected ? null : project.id)}
@@ -306,7 +346,7 @@ function ProjectGraph() {
               position: 'absolute',
               left: `${project.x}%`,
               top: `${project.y}%`,
-              transform: 'translate(-50%, -50%)',
+              transform: 'translate(-50%, -50%) translateZ(0)',
               cursor: 'pointer',
               zIndex: showInfo ? 5 : 2
             }}
@@ -609,7 +649,7 @@ function LandingPage({ onEnter, onNavigate }) {
   }
 
   return (
-    <div className="w-full min-h-screen bg-black text-white overflow-y-auto overflow-x-hidden" style={{
+    <div className="w-full min-h-screen bg-black text-white overflow-y-auto overflow-x-hidden scroll-container gpu-accelerate" style={{
       animation: isChaos ? 'page-destroy 3s ease-in-out' : 'none',
       filter: isChaos ? 'hue-rotate(180deg) saturate(3)' : 'none'
     }}>
@@ -1096,11 +1136,15 @@ function LandingPage({ onEnter, onNavigate }) {
                 <Canvas
                   camera={{ position: [0, 3.5, 8], fov: 50 }}
                   style={{ background: 'transparent' }}
+                  dpr={[1, 1.5]}
+                  performance={{ min: 0.5 }}
+                  frameloop="demand"
+                  gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
                 >
                   <ambientLight intensity={1.5} />
-                  <directionalLight position={[5, 5, 5]} intensity={2} />
-                  <directionalLight position={[-5, 5, -5]} intensity={1} />
-                  <pointLight position={[0, 5, 5]} intensity={1.5} />
+                  <directionalLight position={[5, 5, 5]} intensity={2} castShadow={false} />
+                  <directionalLight position={[-5, 5, -5]} intensity={1} castShadow={false} />
+                  <pointLight position={[0, 5, 5]} intensity={1.5} castShadow={false} />
                   <SharinganModel />
                   <OrbitControls
                     enableZoom={false}
@@ -1109,6 +1153,8 @@ function LandingPage({ onEnter, onNavigate }) {
                     autoRotate={true}
                     autoRotateSpeed={2}
                     target={[0, 2.5, 0]}
+                    enableDamping={false}
+                    makeDefault
                   />
                 </Canvas>
               </div>
@@ -1186,22 +1232,26 @@ export default function App() {
   // Blog post view
   if (currentSection === 'blog' && currentPost) {
     return (
-      <BlogPost
-        slug={currentPost}
-        onNavigate={handleNavigate}
-        onBack={handleBackToBlog}
-        onSelectPost={handleSelectPost}
-      />
+      <Suspense fallback={<LoadingFallback />}>
+        <BlogPost
+          slug={currentPost}
+          onNavigate={handleNavigate}
+          onBack={handleBackToBlog}
+          onSelectPost={handleSelectPost}
+        />
+      </Suspense>
     )
   }
 
   // Blog listing view
   if (currentSection === 'blog') {
     return (
-      <BlogSection
-        onNavigate={handleNavigate}
-        onSelectPost={handleSelectPost}
-      />
+      <Suspense fallback={<LoadingFallback />}>
+        <BlogSection
+          onNavigate={handleNavigate}
+          onSelectPost={handleSelectPost}
+        />
+      </Suspense>
     )
   }
 
@@ -1217,7 +1267,9 @@ export default function App() {
 
       {/* Nise Museum - Raycaster */}
       {currentSection === 'nise' && (
-        <Raycaster onPortalTouch={(room) => setCurrentSection(room)} />
+        <Suspense fallback={<LoadingFallback />}>
+          <Raycaster onPortalTouch={(room) => setCurrentSection(room)} />
+        </Suspense>
       )}
 
       {/* About - Posts Section */}

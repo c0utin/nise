@@ -8,6 +8,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Sphere, Box, Torus } from '@react-three/drei'
+import { InlineMath, DisplayMath, Equation } from '../utils/LaTeX'
+import { LaTeXParagraph, LaTeXText } from '../utils/LaTeXText'
 
 export const metadata = {
   slug: 'how-this-blog-works',
@@ -17,19 +19,27 @@ export const metadata = {
     es: 'Cómo Funciona Este Blog: Un Análisis Técnico Profundo'
   },
   description: {
-    en: 'Explore the architecture, features, and interactive visualizations of a modern React-based blog system with series support',
-    pt: 'Explore a arquitetura, recursos e visualizações interativas de um sistema de blog moderno baseado em React com suporte a séries',
-    es: 'Explora la arquitectura, características y visualizaciones interactivas de un sistema de blog moderno basado en React con soporte para series'
+    en: 'Explore the architecture, features, and interactive visualizations of a modern React-based blog system with series support, LaTeX equations, and IEEE paper structure',
+    pt: 'Explore a arquitetura, recursos e visualizações interativas de um sistema de blog moderno baseado em React com suporte a séries, equações LaTeX e estrutura de paper IEEE',
+    es: 'Explora la arquitectura, características y visualizaciones interactivas de un sistema de blog moderno basado en React con soporte para series, ecuaciones LaTeX y estructura de paper IEEE'
   },
   date: '2025-01-22',
   author: 'Rafael Coutinho',
-  tags: ['react', 'meta', 'architecture', 'visualization', 'tutorial'],
-  readTime: 15,
+  tags: ['react', 'meta', 'architecture', 'visualization', 'tutorial', 'latex', 'ieee'],
+  readTime: 18,
   published: true,
   series: null,
   seriesOrder: null,
-  aiSummary: 'Technical explanation of React-based blog system with interactive visualizations showing architecture, performance metrics, and data flow',
-  keywords: ['react', 'blog', 'architecture', 'three.js', 'visualization', 'performance', 'series']
+  aiSummary: 'Technical explanation of React-based blog system with interactive visualizations showing architecture, performance metrics, data flow, LaTeX equation support, and IEEE paper structure compatibility',
+  keywords: ['react', 'blog', 'architecture', 'three.js', 'visualization', 'performance', 'series', 'latex', 'katex', 'ieee'],
+  // IEEE-compatible fields (following IEEE Author Center guidelines)
+  abstract: 'This paper presents a modern blog system built with React that supports advanced features including sequential series, LaTeX equations, 3D visualizations, and IEEE paper structure. The system demonstrates how contemporary web technologies can create an interactive, performant, and maintainable platform for technical content.',
+  ieeeKeywords: ['Web Development', 'React', 'LaTeX', 'Interactive Visualization', 'Content Management'], // 3-5 keywords recommended
+  affiliation: 'Independent Research',
+  correspondingAuthor: { name: 'Rafael Coutinho', email: 'contact@example.com' },
+  manuscriptReceived: 'January 22, 2025',
+  funding: null, // e.g., 'This work was supported by...'
+  doi: null // Add DOI if published
 }
 
 // Interactive 3D Component Architecture Visualization
@@ -367,6 +377,71 @@ export default function HowThisBlogWorks({ lang = 'en' }) {
           in second (25%), proving that shareable links are essential.
         </p>
 
+        <h2>LaTeX Equation Support</h2>
+        <p>
+          One of the most powerful features for technical writing is native <strong>LaTeX support</strong>.
+          You can write mathematical equations directly in your posts using KaTeX, which renders
+          beautifully and exports correctly to PDF and native LaTeX format.
+        </p>
+
+        <p>
+          For example, here's Einstein's famous equation inline: <InlineMath math="E = mc^2" />,
+          and here's the quadratic formula as a display equation:
+        </p>
+
+        <DisplayMath math="x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}" />
+
+        <p>
+          You can also create numbered equations (IEEE style) for easy reference:
+        </p>
+
+        <Equation
+          number="1"
+          label="fourier"
+          math="F(\omega) = \int_{-\infty}^{\infty} f(t) e^{-i\omega t} dt"
+        />
+
+        <p>
+          The Fourier transform shown in Equation (1) is fundamental to signal processing.
+          Complex equations with matrices are also supported:
+        </p>
+
+        <DisplayMath math="\begin{bmatrix} a & b \\ c & d \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} ax + by \\ cx + dy \end{bmatrix}" />
+
+        <p>
+          When you export to PDF, these equations are rendered beautifully in IEEE format with
+          proper two-column layout, serif fonts, and professional typesetting.
+        </p>
+
+        <h3>Writing Text in LaTeX Format</h3>
+        <p>
+          Beyond equations, you can write your entire blog post using LaTeX-style text formatting
+          commands. This gives you precise control over typography while keeping content readable:
+        </p>
+
+        <LaTeXParagraph>
+          {"You can use \\textbf{bold text}, \\textit{italic text}, and \\texttt{monospace code} directly in your paragraphs. Combine this with inline math like $\\alpha = \\beta + \\gamma$ for technical writing that feels natural."}
+        </LaTeXParagraph>
+
+        <p>
+          The LaTeX text components parse commands like:
+        </p>
+
+        <pre>
+          <code>{`<LaTeXParagraph>
+  This research shows that \textbf{algorithm A} performs
+  \textit{significantly better} than previous methods, achieving
+  an accuracy of $95\%$ with runtime $O(n \log n)$.
+</LaTeXParagraph>`}</code>
+        </pre>
+
+        <p>
+          Supported LaTeX commands include: <code>\textbf{}</code>, <code>\textit{}</code>,
+          <code>\texttt{}</code>, <code>\emph{}</code>, <code>\underline{}</code>,
+          <code>\cite{}</code>, and <code>\ref{}</code>. You can also use <code>$...$</code> for
+          inline math anywhere in your text.
+        </p>
+
         <h2>Data Flow</h2>
         <p>
           When you click a blog post, here's what happens under the hood:
@@ -437,6 +512,113 @@ export default function HowThisBlogWorks({ lang = 'en' }) {
           <li><strong>Open</strong> — GitHub integration encourages community contributions</li>
         </ul>
 
+        <h2>IEEE Paper Structure Support</h2>
+        <p>
+          For academic writing, the blog supports <strong>IEEE paper structure</strong> out of the box.
+          You can use specialized components to create properly formatted research papers:
+        </p>
+
+        <pre>
+          <code>{`import { IEEEPaper, Abstract, IEEEKeywords, FirstFootnote,
+         Introduction, Methodology, Results, Discussion, Conclusion,
+         Equation, Figure, References, Citation } from './utils/IEEEStructure'
+
+export default function ResearchPost({ lang }) {
+  return (
+    <IEEEPaper
+      title="Optimization of Neural Networks Using Novel Gradient Methods"
+      authors={[
+        { name: "John Doe", affiliation: "Department of Computer Science, MIT",
+          email: "jdoe@mit.edu" }
+      ]}
+    >
+      {/* Abstract: Single paragraph, up to 250 words, self-contained */}
+      <Abstract>
+        This paper presents a comprehensive analysis of gradient descent
+        optimization methods for training deep neural networks. We propose
+        novel adaptive learning rate strategies that demonstrate improved
+        convergence rates across multiple benchmark datasets...
+      </Abstract>
+
+      {/* Keywords: 3-5 terms from IEEE Thesaurus */}
+      <IEEEKeywords keywords={['Neural networks', 'Optimization', 'Gradient descent',
+                                'Machine learning', 'Adaptive algorithms']} />
+
+      {/* First Footnote: Publication metadata */}
+      <FirstFootnote
+        manuscriptReceived="January 15, 2025"
+        correspondingAuthor={{ name: "John Doe", email: "jdoe@mit.edu" }}
+        funding="This work was supported by NSF Grant #12345"
+      />
+
+      {/* I. INTRODUCTION */}
+      <Introduction>
+        Deep learning has revolutionized machine learning...
+      </Introduction>
+
+      {/* II. METHODOLOGY */}
+      <Methodology>
+        <Equation number="1" label="loss"
+          math="L(\\theta) = \\frac{1}{n} \\sum_{i=1}^{n} (y_i - f(x_i; \\theta))^2" />
+        The loss function in Eq. (1) measures prediction error...
+      </Methodology>
+
+      {/* III. RESULTS */}
+      <Results>
+        <Figure caption="Training accuracy over 100 epochs" label="fig1">
+          <img src="results.png" alt="Results" />
+        </Figure>
+        As shown in Fig. 1, our method achieves...
+      </Results>
+
+      {/* IV. DISCUSSION */}
+      <Discussion>
+        The experimental results demonstrate that...
+      </Discussion>
+
+      {/* V. CONCLUSION */}
+      <Conclusion>
+        We presented a novel optimization approach...
+      </Conclusion>
+
+      {/* REFERENCES (not numbered) */}
+      <References references={[
+        {
+          authors: "Y. LeCun, Y. Bengio, and G. Hinton",
+          title: "Deep learning",
+          journal: "Nature",
+          volume: "521",
+          pages: "436-444",
+          year: "2015",
+          doi: "10.1038/nature14539"
+        }
+      ]} />
+    </IEEEPaper>
+  )
+}`}</code>
+        </pre>
+
+        <p>
+          The IEEE structure components automatically handle:
+        </p>
+        <ul>
+          <li><strong>Roman numeral section numbering</strong> (I, II, III, IV, V...)</li>
+          <li><strong>Letter subsection numbering</strong> (A, B, C...)</li>
+          <li><strong>Abstract word count validation</strong> (250-word limit with warnings)</li>
+          <li><strong>Keyword count validation</strong> (3-5 keywords recommended)</li>
+          <li><strong>First footnote generation</strong> (manuscript dates, corresponding author, funding)</li>
+          <li><strong>Structured sections</strong> (Introduction, Methodology, Results, Discussion, Conclusion)</li>
+          <li><strong>Figure and table auto-numbering</strong> with IEEE-style captions</li>
+          <li><strong>Citation and reference formatting</strong></li>
+          <li><strong>Author blocks</strong> with affiliations and contact information</li>
+        </ul>
+
+        <p>
+          This follows the official <strong>IEEE Author Center guidelines</strong> for journal article structure,
+          ensuring your posts are publication-ready. When exported to PDF, the document maintains IEEE
+          two-column format with proper typography and spacing.
+        </p>
+
         <h2>Code Example: Creating a Post</h2>
         <p>
           Want to create your own post? It's just a React component:
@@ -444,24 +626,46 @@ export default function HowThisBlogWorks({ lang = 'en' }) {
 
         <pre>
           <code>{`import React from 'react'
+import { DisplayMath, Equation, LaTeXParagraph } from '../utils/LaTeX'
 
 export const metadata = {
-  slug: 'my-awesome-post',
-  title: { en: 'My Awesome Post' },
-  description: { en: 'An amazing blog post' },
+  slug: 'my-research-post',
+  title: { en: 'Neural Network Optimization' },
+  description: { en: 'Analysis of gradient descent variants' },
   date: '2025-01-22',
-  tags: ['tutorial', 'react'],
-  published: true
+  tags: ['machine-learning', 'optimization'],
+  published: true,
+  // IEEE metadata for PDF export
+  abstract: 'This paper presents a comparative analysis...',
+  ieeeKeywords: ['Neural Networks', 'Optimization', 'Gradient Descent'],
+  author: 'Your Name',
+  affiliation: 'Your University'
 }
 
 export default function MyPost({ lang = 'en' }) {
   return (
     <article className="prose prose-invert">
-      <h1>{metadata.title[lang]}</h1>
-      <p>Your content here...</p>
+      <h2>Introduction</h2>
 
-      {/* You can use any React component! */}
-      <InteractiveDemo />
+      <LaTeXParagraph>
+        The \textbf{gradient descent} algorithm is fundamental to training
+        neural networks. For a loss function $L(\\theta)$, we update parameters
+        using the rule shown in Equation (1).
+      </LaTeXParagraph>
+
+      <Equation
+        number="1"
+        label="gd"
+        math="\\theta_{t+1} = \\theta_t - \\eta \\nabla L(\\theta_t)"
+      />
+
+      <LaTeXParagraph>
+        Where $\\eta$ is the \textit{learning rate} and $\\nabla L$ represents
+        the gradient. This method achieves convergence rate $O(1/\\sqrt{t})$.
+      </LaTeXParagraph>
+
+      {/* Interactive visualizations still work! */}
+      <InteractiveGradientVisualization />
     </article>
   )
 }`}</code>
@@ -472,18 +676,56 @@ export default function MyPost({ lang = 'en' }) {
           in the blog listing with full series support, routing, and all other features.
         </p>
 
-        <h2>Future Enhancements</h2>
+        <h3>PDF Export in IEEE Format</h3>
         <p>
-          While the blog is feature-complete, there's always room for improvement:
+          When you click "Export as PDF", the system automatically:
         </p>
 
         <ul>
-          <li>🔲 <strong>Reading progress</strong> — Track completion across series</li>
-          <li>🔲 <strong>Comments system</strong> — GitHub Discussions integration</li>
-          <li>🔲 <strong>Search</strong> — Full-text search across all posts</li>
-          <li>🔲 <strong>RSS feed</strong> — Subscribe to updates</li>
-          <li>🔲 <strong>Dark/Light theme</strong> — Currently dark-mode only</li>
-          <li>🔲 <strong>Code playground</strong> — Live React sandboxes in posts</li>
+          <li>Waits for all LaTeX equations to fully render</li>
+          <li>Captures Three.js canvases as static PNG snapshots</li>
+          <li>Formats the document in IEEE conference paper style</li>
+          <li>Applies two-column layout to the main content</li>
+          <li>Uses Times New Roman font at appropriate sizes</li>
+          <li>Includes title, authors, abstract, and keywords in single-column header</li>
+          <li>Preserves all rendered LaTeX with proper spacing</li>
+          <li>Opens the browser's print dialog for PDF generation</li>
+        </ul>
+
+        <p>
+          The result is a professional-looking academic paper that you can save as PDF,
+          ready for submission to conferences or sharing with colleagues. All mathematical
+          notation is perfectly rendered, and interactive visualizations are preserved as
+          high-quality snapshots.
+        </p>
+
+        <h2>Recent Enhancements</h2>
+        <p>
+          The blog system continues to evolve with new features:
+        </p>
+
+        <ul>
+          <li><strong>LaTeX Equations</strong> — Native mathematical equation rendering with KaTeX</li>
+          <li><strong>LaTeX Text Formatting</strong> — Write content using LaTeX commands (textbf, textit, etc.)</li>
+          <li><strong>IEEE PDF Export</strong> — Professional two-column IEEE format with rendered LaTeX</li>
+          <li><strong>IEEE Structure Components</strong> — Academic paper formatting with auto-numbering</li>
+          <li><strong>3D Snapshot Export</strong> — Captures Three.js canvases as static images in PDF</li>
+          <li><strong>Performance Optimizations</strong> — KaTeX preloading, lazy loading</li>
+        </ul>
+
+        <h2>Future Enhancements</h2>
+        <p>
+          There's always room for more improvement:
+        </p>
+
+        <ul>
+          <li><strong>Reading progress</strong> — Track completion across series</li>
+          <li><strong>Comments system</strong> — GitHub Discussions integration</li>
+          <li><strong>Search</strong> — Full-text search across all posts</li>
+          <li><strong>RSS feed</strong> — Subscribe to updates</li>
+          <li><strong>Dark/Light theme</strong> — Currently dark-mode only</li>
+          <li><strong>Code playground</strong> — Live React sandboxes in posts</li>
+          <li><strong>BibTeX integration</strong> — Import and manage references</li>
         </ul>
 
         <h2>Conclusion</h2>
